@@ -2,6 +2,13 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="theme-color" content="#080817">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KWIZ!">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" id="pwaManifest">
+<link rel="apple-touch-icon" id="appleTouchIcon">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KWIZ! — Multiplayer Quiz</title>
 <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Inter:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -111,10 +118,35 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
 
 /* ACCOUNT PILL */
-.acc-pill{position:fixed;top:30px;right:16px;display:none;align-items:center;gap:8px;background:rgba(8,8,23,.9);border:1px solid var(--border);border-radius:20px;padding:6px 14px 6px 10px;z-index:200;backdrop-filter:blur(12px);cursor:pointer;transition:background .15s}
-.acc-pill:hover{background:rgba(255,255,255,.08)}
-.acc-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0}
+.acc-pill{display:none;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:20px;padding:6px 14px 6px 10px;cursor:pointer;transition:background .15s;flex-shrink:0}
+.acc-pill:hover{background:rgba(255,255,255,.12)}
+.acc-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0}
 .acc-name{font-size:13px;font-weight:700;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Profile dropdown menu */
+.profile-menu-bg{position:fixed;inset:0;z-index:300;display:none}
+.profile-menu-bg.show{display:block}
+.profile-menu{position:fixed;top:60px;right:16px;background:rgba(12,12,28,.97);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:8px;width:260px;z-index:301;backdrop-filter:blur(24px);box-shadow:0 20px 60px rgba(0,0,0,.6);animation:menuDrop .2s cubic-bezier(.34,1.4,.64,1)}
+@keyframes menuDrop{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.pm-header{padding:14px 14px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:6px}
+.pm-avatar-big{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;margin:0 auto 10px;box-shadow:0 0 20px rgba(176,109,255,.4)}
+.pm-name{font-weight:800;font-size:16px;text-align:center}
+.pm-email{font-size:12px;color:var(--muted);text-align:center;margin-top:3px;word-break:break-all}
+.pm-pro-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,149,0,.1));border:1px solid rgba(255,215,0,.3);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:800;color:var(--pro-gold);margin-top:8px}
+.pm-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;cursor:pointer;transition:background .15s;font-size:14px;font-weight:700;width:100%;border:none;background:none;color:var(--text);text-align:left}
+.pm-item:hover{background:rgba(255,255,255,.08)}
+.pm-item .pm-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+.pm-item .pm-label{flex:1}
+.pm-item .pm-arrow{color:var(--muted);font-size:12px}
+.pm-divider{height:1px;background:rgba(255,255,255,.07);margin:6px 8px}
+.pm-item.danger:hover{background:rgba(255,59,92,.1)}
+.pm-item.danger{color:var(--red)}
+
+/* Home screen top bar */
+.home-topbar{position:fixed;top:0;left:0;right:0;padding:12px 16px;display:flex;justify-content:flex-end;align-items:center;z-index:100;pointer-events:none}
+.home-topbar .acc-pill{pointer-events:all}
+/* Only show homeTopbar on home screen */
+body:not(:has(#home.active)) #homeTopbar{display:none!important}
 
 /* HOME */
 #home .modes{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:480px;margin-bottom:16px}
@@ -300,27 +332,113 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 <!-- PRO UPSELL MODAL -->
 <div class="pro-modal-bg" id="proModalBg">
   <div class="pro-modal">
-    <div class="pro-modal-icon">⚡</div>
-    <h2>KWIZ! Pro</h2>
-    <p>Schalte fortgeschrittene Fragetypen und exklusive Features frei – mach deine Quizze unvergesslich!</p>
-    <div class="pro-features">
-      <div class="pro-feat-item"><span class="feat-icon">🎯</span> Schätzfragen – wer liegt am nächsten?</div>
-      <div class="pro-feat-item"><span class="feat-icon">⌨️</span> Freitexteingabe – kein Multiple Choice</div>
-      <div class="pro-feat-item"><span class="feat-icon">🎚️</span> Schieberegler – intuitives Schätzen</div>
-      <div class="pro-feat-item"><span class="feat-icon">♾️</span> Unbegrenzte Quiz-Bibliothek</div>
-      <div class="pro-feat-item"><span class="feat-icon">📊</span> Detaillierte Statistiken</div>
-      <div class="pro-feat-item"><span class="feat-icon">🎨</span> Custom Themes & Branding</div>
+    <div id="proModalContent">
+      <!-- Step 1: Sales -->
+      <div id="proStep1">
+        <div class="pro-modal-icon">⚡</div>
+        <h2>KWIZ! Pro</h2>
+        <p>Schalte fortgeschrittene Fragetypen und exklusive Features frei – mach deine Quizze unvergesslich!</p>
+        <div class="pro-features">
+          <div class="pro-feat-item"><span class="feat-icon">🎯</span> Schätzfragen – wer liegt am nächsten?</div>
+          <div class="pro-feat-item"><span class="feat-icon">⌨️</span> Freitexteingabe – kein Multiple Choice</div>
+          <div class="pro-feat-item"><span class="feat-icon">🎚️</span> Schieberegler – intuitives Schätzen</div>
+          <div class="pro-feat-item"><span class="feat-icon">♾️</span> Unbegrenzte Quiz-Bibliothek</div>
+          <div class="pro-feat-item"><span class="feat-icon">📊</span> Detaillierte Statistiken</div>
+          <div class="pro-feat-item"><span class="feat-icon">🎨</span> Custom Themes & Branding</div>
+        </div>
+        <div class="pro-price">4,99 € <span>/ Monat</span></div>
+        <button class="fake-btn-pro" onclick="goToPayment()">⚡ Jetzt Pro werden</button>
+        <br>
+        <button class="pro-close" onclick="closeProModal()">Vielleicht später</button>
+      </div>
+
+      <!-- Step 2: Fake Payment -->
+      <div id="proStep2" style="display:none">
+        <div class="pro-modal-icon" style="font-size:40px">💳</div>
+        <h2 style="font-size:24px;margin-bottom:16px">Zahlungsdetails</h2>
+        <div style="text-align:left;display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+          <div>
+            <div class="lbl" style="margin-bottom:6px">Karteninhaber</div>
+            <input class="input" id="payName" placeholder="Max Mustermann" autocomplete="off">
+          </div>
+          <div>
+            <div class="lbl" style="margin-bottom:6px">Kartennummer</div>
+            <input class="input" id="payCard" placeholder="1234 5678 9012 3456" maxlength="19"
+              oninput="formatCard(this)" autocomplete="off" inputmode="numeric">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <div class="lbl" style="margin-bottom:6px">Ablaufdatum</div>
+              <input class="input" id="payExp" placeholder="MM/JJ" maxlength="5"
+                oninput="formatExpiry(this)" autocomplete="off" inputmode="numeric">
+            </div>
+            <div>
+              <div class="lbl" style="margin-bottom:6px">CVV</div>
+              <input class="input" id="payCvv" placeholder="•••" maxlength="3"
+                type="password" autocomplete="off" inputmode="numeric">
+            </div>
+          </div>
+        </div>
+        <div style="background:rgba(0,214,143,.06);border:1px solid rgba(0,214,143,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:rgba(0,214,143,.8);margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <span>🔒</span> Sichere 256-bit SSL-Verschlüsselung
+        </div>
+        <button class="fake-btn-pro" onclick="processPayment()" id="payBtn">💳 4,99 € bezahlen</button>
+        <br>
+        <button class="pro-close" onclick="backToSales()">← Zurück</button>
+      </div>
+
+      <!-- Step 3: Processing -->
+      <div id="proStep3" style="display:none;text-align:center;padding:20px 0">
+        <div style="width:64px;height:64px;border:4px solid rgba(255,215,0,.2);border-top-color:var(--pro-gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px"></div>
+        <p style="font-weight:700;font-size:16px;color:var(--pro-gold)">Zahlung wird verarbeitet…</p>
+        <p class="muted" style="margin-top:8px;font-size:13px">Bitte warten</p>
+      </div>
+
+      <!-- Step 4: Success -->
+      <div id="proStep4" style="display:none;text-align:center">
+        <div style="font-size:72px;margin-bottom:12px;animation:bounceIn .6s cubic-bezier(.34,1.56,.64,1)">🎉</div>
+        <h2 style="margin-bottom:8px">Willkommen bei Pro!</h2>
+        <p style="color:rgba(240,240,255,.7);margin-bottom:20px">Du hast jetzt Zugriff auf alle Pro-Features. Viel Spaß!</p>
+        <div style="display:flex;flex-direction:column;gap:8px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:14px;padding:16px;margin-bottom:20px">
+          <div style="font-size:13px;font-weight:700;color:var(--pro-gold)">✅ Schätzfragen freigeschaltet</div>
+          <div style="font-size:13px;font-weight:700;color:var(--pro-gold)">✅ Freitexteingabe freigeschaltet</div>
+          <div style="font-size:13px;font-weight:700;color:var(--pro-gold)">✅ Schieberegler freigeschaltet</div>
+        </div>
+        <button class="fake-btn-pro" onclick="activatePro()">⚡ Los geht's!</button>
+      </div>
     </div>
-    <div class="pro-price">4,99 € <span>/ Monat</span></div>
-    <button class="fake-btn-pro" onclick="fakePurchase()">⚡ Jetzt Pro werden</button>
-    <br>
-    <button class="pro-close" onclick="closeProModal()">Vielleicht später</button>
   </div>
 </div>
 
-<div class="acc-pill" id="accPill" onclick="showAccountMenu()">
-  <div class="acc-avatar" id="accAvatar">?</div>
-  <span class="acc-name" id="accName">Account</span>
+<!-- Home topbar with account pill -->
+<div class="home-topbar" id="homeTopbar">
+  <div class="acc-pill" id="accPill" onclick="toggleProfileMenu()">
+    <div class="acc-avatar" id="accAvatar">?</div>
+    <span class="acc-name" id="accName">Account</span>
+  </div>
+</div>
+
+<!-- Profile dropdown -->
+<div class="profile-menu-bg" id="profileMenuBg" onclick="closeProfileMenu()"></div>
+<div class="profile-menu" id="profileMenu" style="display:none">
+  <div class="pm-header">
+    <div class="pm-avatar-big" id="pmAvatarBig">?</div>
+    <div class="pm-name" id="pmName">—</div>
+    <div class="pm-email" id="pmEmail">—</div>
+    <div style="text-align:center;margin-top:8px">
+      <span class="pm-pro-badge" id="pmProBadge" style="display:none">⚡ Pro aktiv</span>
+    </div>
+  </div>
+  <button class="pm-item" onclick="pmGoMyQuizzes()">
+    <span class="pm-icon">📚</span><span class="pm-label">Meine Quizze</span><span class="pm-arrow">›</span>
+  </button>
+  <button class="pm-item" onclick="pmManagePro()">
+    <span class="pm-icon" id="pmProIcon">⚡</span><span class="pm-label" id="pmProLabel">Pro freischalten</span><span class="pm-arrow">›</span>
+  </button>
+  <div class="pm-divider"></div>
+  <button class="pm-item danger" onclick="pmLogout()">
+    <span class="pm-icon">👋</span><span class="pm-label">Abmelden</span>
+  </button>
 </div>
 <div class="conn-pill" id="connPill">
   <div class="conn-dot live"></div>
@@ -377,7 +495,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       <div class="icon">🧠</div><div class="title">Solo Demo</div><div class="desc">Demo-Quiz testen</div>
     </div>
   </div>
-  <button class="btn btn-pro" style="max-width:480px;margin-top:4px" onclick="openProModal()">⚡ KWIZ! Pro – Neue Fragetypen freischalten</button>
+  <button class="btn btn-pro" style="max-width:480px;margin-top:4px" id="homeProBtn" onclick="handleHomeProBtn()">⚡ KWIZ! Pro – Neue Fragetypen freischalten</button>
+  <button class="btn btn-ghost" id="pwaInstallBtn" style="max-width:480px;margin-top:4px;display:none" onclick="installPWA()">📲 App installieren</button>
   <p class="muted" style="max-width:360px;text-align:center;margin-top:12px">Host teilt den <strong style="color:var(--yellow)">Raum-Code</strong> — alle spielen live mit.</p>
 </div>
 
@@ -386,7 +505,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <div class="mq-header">
     <button class="btn btn-ghost btn-sm" style="width:auto" onclick="showScreen('home')">← Zurück</button>
     <h2>📚 Meine Quizze</h2>
-    <button class="btn btn-green btn-xs" onclick="goCreateQuiz()">+ Neu</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn btn-green btn-xs" onclick="goCreateQuiz()">+ Neu</button>
+      <div class="acc-pill" id="accPillMQ" style="display:none;padding:6px 10px" onclick="toggleProfileMenu()">
+        <div class="acc-avatar" id="accAvatarMQ">?</div>
+      </div>
+    </div>
   </div>
   <div id="quizLibList" style="width:100%;max-width:580px;padding-top:8px">
     <p class="muted" style="text-align:center;margin-top:24px">Lade...</p>
@@ -398,9 +522,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <div class="editor-header">
     <button class="btn btn-ghost btn-sm" style="width:auto" onclick="showScreen('home')">← Zurück</button>
     <h2>Quiz erstellen</h2>
-    <div style="display:flex;gap:8px">
+    <div style="display:flex;gap:8px;align-items:center">
       <button class="btn btn-ghost btn-sm" style="width:auto" onclick="saveQuizToAccount()" id="saveBtn">💾 Speichern</button>
       <button class="btn btn-red btn-sm" style="width:auto" onclick="startHosting()">🚀 Hosten</button>
+      <div class="acc-pill" id="accPillEditor" style="display:none" onclick="toggleProfileMenu()">
+        <div class="acc-avatar" id="accAvatarEditor">?</div>
+      </div>
     </div>
   </div>
   <div style="width:100%;max-width:640px">
@@ -419,11 +546,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       <div class="add-type-btn" style="border-color:rgba(176,109,255,.3)" onclick="addQuestion('info')"><div class="i">📊</div>Infofolie</div>
     </div>
     <!-- Pro types -->
-    <div class="pro-section-label"><span>⚡ Pro-Fragetypen</span></div>
+    <div class="pro-section-label" id="proSectionLabel"><span>⚡ Pro-Fragetypen</span></div>
     <div class="add-q-types-pro">
-      <div class="add-type-btn pro-type" onclick="addProQuestion('estimate')"><div class="i">🎯</div>Schätzfrage<div class="pro-type-corner">PRO</div></div>
-      <div class="add-type-btn pro-type" onclick="addProQuestion('input')"><div class="i">⌨️</div>Freitexteingabe<div class="pro-type-corner">PRO</div></div>
-      <div class="add-type-btn pro-type" onclick="addProQuestion('slider')"><div class="i">🎚️</div>Schieberegler<div class="pro-type-corner">PRO</div></div>
+      <div class="add-type-btn pro-type" onclick="guardedAddPro('estimate')"><div class="i">🎯</div>Schätzfrage<div class="pro-type-corner" id="pCorner1">PRO</div></div>
+      <div class="add-type-btn pro-type" onclick="guardedAddPro('input')"><div class="i">⌨️</div>Freitexteingabe<div class="pro-type-corner" id="pCorner2">PRO</div></div>
+      <div class="add-type-btn pro-type" onclick="guardedAddPro('slider')"><div class="i">🎚️</div>Schieberegler<div class="pro-type-corner" id="pCorner3">PRO</div></div>
     </div>
   </div>
 </div>
@@ -624,14 +751,99 @@ let S={role:null,code:null,name:null,score:0,streak:0,selected:null,timerIv:null
 let editorQs=[];
 let qrInstance=null;
 
-// ─── PRO MODAL ───────────────────────────────
-function openProModal(){document.getElementById('proModalBg').classList.add('show');}
-function closeProModal(){document.getElementById('proModalBg').classList.remove('show');}
-function fakePurchase(){
-  closeProModal();
-  toast('🎉 Zahlungsseite würde hier öffnen… (Demo-Modus)','var(--pro-gold)');
+// ─── PRO SYSTEM ──────────────────────────────
+const PRO_KEY='kwiz_pro_active';
+let isPro=localStorage.getItem(PRO_KEY)==='1';
+
+function isProActive(){return isPro;}
+
+function updateProUI(){
+  const homeBtn=document.getElementById('homeProBtn');
+  const label=document.getElementById('proSectionLabel');
+  if(isPro){
+    if(homeBtn){
+      homeBtn.innerHTML='✅ KWIZ! Pro aktiv – klicken zum Verwalten';
+      homeBtn.style.background='linear-gradient(135deg,#00d68f,#007a4a)';
+      homeBtn.style.boxShadow='0 8px 28px rgba(0,214,143,.4)';
+    }
+    if(label) label.querySelector('span').innerHTML='⚡ Pro-Fragetypen <span style="font-size:10px;color:var(--green);background:rgba(0,214,143,.15);padding:2px 6px;border-radius:6px;margin-left:4px">✅ AKTIV</span>';
+    ['pCorner1','pCorner2','pCorner3'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.style.background='linear-gradient(135deg,#00d68f,#007a4a)';}
+    });
+    document.querySelectorAll('.add-type-btn.pro-type').forEach(b=>{b.style.opacity='1';});
+  } else {
+    if(homeBtn){
+      homeBtn.innerHTML='⚡ KWIZ! Pro – Neue Fragetypen freischalten';
+      homeBtn.style.background='';homeBtn.style.boxShadow='';
+    }
+    if(label) label.querySelector('span').innerHTML='⚡ Pro-Fragetypen <span style="font-size:10px;color:var(--muted);background:rgba(255,255,255,.06);padding:2px 6px;border-radius:6px;margin-left:4px">🔒 Gesperrt</span>';
+    ['pCorner1','pCorner2','pCorner3'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.style.background='';}
+    });
+  }
 }
-document.getElementById('proModalBg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeProModal();});
+
+function handleHomeProBtn(){
+  if(isPro){
+    if(confirm('⚡ KWIZ! Pro ist aktiv!\n\nPro-Features deaktivieren?')){
+      isPro=false;localStorage.removeItem(PRO_KEY);
+      updateProUI();toast('Pro deaktiviert','var(--muted)');
+    }
+  } else {
+    openProModal();
+  }
+}
+
+function openProModal(){showProStep(1);document.getElementById('proModalBg').classList.add('show');}
+function closeProModal(){document.getElementById('proModalBg').classList.remove('show');}
+
+function showProStep(n){
+  [1,2,3,4].forEach(i=>{
+    const el=document.getElementById('proStep'+i);
+    if(el) el.style.display=i===n?'':'none';
+  });
+}
+
+function goToPayment(){showProStep(2);}
+function backToSales(){showProStep(1);}
+
+function formatCard(el){
+  let v=el.value.replace(/\D/g,'').substring(0,16);
+  el.value=v.replace(/(.{4})/g,'$1 ').trim();
+}
+function formatExpiry(el){
+  let v=el.value.replace(/\D/g,'').substring(0,4);
+  if(v.length>=2) v=v.substring(0,2)+'/'+v.substring(2);
+  el.value=v;
+}
+
+function processPayment(){
+  const name=document.getElementById('payName').value.trim();
+  const card=document.getElementById('payCard').value.replace(/\s/g,'');
+  const exp=document.getElementById('payExp').value.trim();
+  const cvv=document.getElementById('payCvv').value.trim();
+  if(!name){toast('Bitte Namen eingeben','var(--red)');return;}
+  if(card.length<16){toast('Ungültige Kartennummer','var(--red)');return;}
+  if(exp.length<5){toast('Ungültiges Ablaufdatum','var(--red)');return;}
+  if(cvv.length<3){toast('Ungültiger CVV','var(--red)');return;}
+  showProStep(3);
+  setTimeout(()=>showProStep(4),2200);
+}
+
+function activatePro(){
+  isPro=true;localStorage.setItem(PRO_KEY,'1');
+  closeProModal();
+  updateProUI();
+  toast('⚡ KWIZ! Pro ist jetzt aktiv!','var(--pro-gold)');
+  if(activeScreen()==='createQuiz') renderEditor();
+}
+
+document.getElementById('proModalBg').addEventListener('click',e=>{
+  const step3=document.getElementById('proStep3');
+  if(e.target===e.currentTarget&&(!step3||step3.style.display==='none')) closeProModal();
+});
 
 // ─── FIREBASE INIT ──────────────────────────
 window.addEventListener('fb-ready',()=>{
@@ -646,7 +858,7 @@ window.addEventListener('fb-ready',()=>{
         showScreen('home');renderEditor();updateMyQuizzesDesc();
       }
     } else {
-      document.getElementById('accPill').style.display='none';
+      ['accPill','accPillEditor','accPillMQ'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
       if(activeScreen()==='loadingScreen') showScreen('authScreen');
     }
   });
@@ -654,10 +866,61 @@ window.addEventListener('fb-ready',()=>{
 
 function updateAccountPill(u){
   const nm=u.displayName||u.email?.split('@')[0]||'User';
-  document.getElementById('accAvatar').textContent=nm.charAt(0).toUpperCase();
-  document.getElementById('accName').textContent=nm;
-  document.getElementById('accPill').style.display='flex';
+  const initial=nm.charAt(0).toUpperCase();
+  // Main pill
+  const pill=document.getElementById('accPill');
+  if(pill){document.getElementById('accAvatar').textContent=initial;document.getElementById('accName').textContent=nm;pill.style.display='flex';}
+  // Editor pill
+  const ep=document.getElementById('accPillEditor');
+  if(ep){document.getElementById('accAvatarEditor').textContent=initial;ep.style.display='flex';}
+  // MQ pill
+  const mqp=document.getElementById('accPillMQ');
+  if(mqp){document.getElementById('accAvatarMQ').textContent=initial;mqp.style.display='flex';}
+  // Profile menu data
+  document.getElementById('pmAvatarBig').textContent=initial;
+  document.getElementById('pmName').textContent=nm;
+  document.getElementById('pmEmail').textContent=u.email||(u.isAnonymous?'Gast-Konto':'');
+  updateProfileMenuPro();
 }
+function updateProfileMenuPro(){
+  const badge=document.getElementById('pmProBadge');
+  const icon=document.getElementById('pmProIcon');
+  const lbl=document.getElementById('pmProLabel');
+  if(isPro){
+    if(badge) badge.style.display='inline-flex';
+    if(icon) icon.textContent='✅';
+    if(lbl) lbl.textContent='Pro verwalten';
+  } else {
+    if(badge) badge.style.display='none';
+    if(icon) icon.textContent='⚡';
+    if(lbl) lbl.textContent='Pro freischalten';
+  }
+}
+function toggleProfileMenu(){
+  const menu=document.getElementById('profileMenu');
+  const bg=document.getElementById('profileMenuBg');
+  const isOpen=menu.style.display!=='none';
+  if(isOpen){closeProfileMenu();}
+  else{
+    updateProfileMenuPro();
+    // Position menu near whichever pill was clicked
+    const pill=document.getElementById('accPill');
+    const rect=pill?.getBoundingClientRect();
+    if(rect){
+      menu.style.top=(rect.bottom+8)+'px';
+      menu.style.right=(window.innerWidth-rect.right)+'px';
+      menu.style.left='auto';
+    }
+    menu.style.display='block';bg.classList.add('show');
+  }
+}
+function closeProfileMenu(){
+  document.getElementById('profileMenu').style.display='none';
+  document.getElementById('profileMenuBg').classList.remove('show');
+}
+function pmGoMyQuizzes(){closeProfileMenu();showScreen('myQuizzes');loadMyQuizzes();}
+function pmManagePro(){closeProfileMenu();if(isPro){handleHomeProBtn();}else{openProModal();}}
+function pmLogout(){closeProfileMenu();doLogout();}
 async function updateMyQuizzesDesc(){
   if(!currentUser||currentUser.isAnonymous) return;
   try{
@@ -666,11 +929,7 @@ async function updateMyQuizzesDesc(){
     document.getElementById('myQuizzesDesc').textContent=n?`${n} Quiz${n===1?'':'ze'}`:'Noch keine Quizze';
   }catch(e){}
 }
-function showAccountMenu(){
-  if(!currentUser) return;
-  const nm=currentUser.displayName||currentUser.email?.split('@')[0]||'User';
-  if(confirm(`Angemeldet als: ${nm}\n${currentUser.email||'(Gast)'}\n\nAbmelden?`)) doLogout();
-}
+// showAccountMenu replaced by toggleProfileMenu
 
 // ─── AUTH ───────────────────────────────────
 function switchAuthTab(t){
@@ -715,7 +974,7 @@ function guestMode(){
 async function doLogout(){
   try{await window._auth.signOut(fbAuth);}catch(e){}
   currentUser=null;
-  document.getElementById('accPill').style.display='none';
+  ['accPill','accPillEditor','accPillMQ'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
   fullReset();showScreen('authScreen');
 }
 function authErr(code){
@@ -851,6 +1110,10 @@ function addProQuestion(type){
   else if(type==='slider') editorQs.push({type:'slider',q:'',correctValue:50,min:0,max:100,unit:'',time:25});
   renderEditor();
   setTimeout(()=>document.querySelectorAll('.q-card')[editorQs.length-1]?.scrollIntoView({behavior:'smooth',block:'center'}),60);
+}
+function guardedAddPro(type){
+  if(!isPro){openProModal();return;}
+  addProQuestion(type);
 }
 function delQ(i){editorQs.splice(i,1);renderEditor();}
 function setCorrect(qi,ai){editorQs[qi].correct=ai;renderEditor();}
@@ -1411,6 +1674,98 @@ document.addEventListener('click',e=>{
   }
 });
 renderEditor();
+updateProUI();
+
+// ─── PWA ────────────────────────────────────
+(function(){
+  // Generate inline SVG icon as data URI
+  const svgIcon=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="100" fill="#080817"/><text x="256" y="340" font-size="280" text-anchor="middle" font-family="Arial Black,sans-serif" fill="#ff3b5c">K</text><text x="370" y="200" font-size="140" text-anchor="middle" font-family="Arial Black,sans-serif" fill="#ffcc00">!</text></svg>`;
+  const iconDataUri='data:image/svg+xml;base64,'+btoa(svgIcon);
+
+  // Set apple touch icon
+  const atIcon=document.getElementById('appleTouchIcon');
+  if(atIcon) atIcon.href=iconDataUri;
+
+  // Build manifest as blob
+  const manifest={
+    name:'KWIZ! Multiplayer Quiz',
+    short_name:'KWIZ!',
+    description:'Das ultimative Multiplayer-Quiz-Battle',
+    start_url:location.href.split('?')[0],
+    display:'standalone',
+    orientation:'portrait-primary',
+    background_color:'#080817',
+    theme_color:'#080817',
+    lang:'de',
+    icons:[
+      {src:iconDataUri,sizes:'192x192',type:'image/svg+xml',purpose:'any maskable'},
+      {src:iconDataUri,sizes:'512x512',type:'image/svg+xml',purpose:'any maskable'}
+    ],
+    shortcuts:[
+      {name:'Quiz erstellen',short_name:'Erstellen',description:'Neues Quiz anlegen',url:location.href.split('?')[0]+'#create',icons:[{src:iconDataUri,sizes:'96x96'}]},
+      {name:'Beitreten',short_name:'Beitreten',description:'Einem Raum beitreten',url:location.href.split('?')[0]+'#join',icons:[{src:iconDataUri,sizes:'96x96'}]}
+    ]
+  };
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  const manifestUrl=URL.createObjectURL(blob);
+  const mLink=document.getElementById('pwaManifest');
+  if(mLink) mLink.href=manifestUrl;
+
+  // Service Worker
+  if('serviceWorker' in navigator){
+    const swCode=`
+const CACHE='kwiz-v1';
+const ASSETS=[
+  'https://fonts.googleapis.com/css2?family=Righteous&family=Inter:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap',
+  'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
+];
+self.addEventListener('install',e=>{
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS).catch(()=>{})).then(()=>self.skipWaiting()));
+});
+self.addEventListener('activate',e=>{
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+});
+self.addEventListener('fetch',e=>{
+  if(e.request.url.includes('firebase')||e.request.url.includes('googleapis.com/identitytoolkit')) return;
+  e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));
+});
+`;
+    const swBlob=new Blob([swCode],{type:'application/javascript'});
+    const swUrl=URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swUrl,{scope:'/'}).catch(()=>{});
+  }
+
+  // Install prompt
+  let deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt',e=>{
+    e.preventDefault();deferredPrompt=e;
+    const btn=document.getElementById('pwaInstallBtn');
+    if(btn) btn.style.display='';
+  });
+  window.addEventListener('appinstalled',()=>{
+    deferredPrompt=null;
+    const btn=document.getElementById('pwaInstallBtn');
+    if(btn) btn.style.display='none';
+    toast('✅ App installiert!','var(--green)');
+  });
+  window.installPWA=async function(){
+    if(deferredPrompt){
+      deferredPrompt.prompt();
+      const{outcome}=await deferredPrompt.userChoice;
+      if(outcome==='accepted') deferredPrompt=null;
+    } else {
+      // Fallback instructions
+      const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+      const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      if(isIOS||isSafari){
+        alert('📲 iOS Installation:\n\n1. Tippe auf das Teilen-Symbol (↑)\n2. Wähle „Zum Home-Bildschirm"\n3. Tippe „Hinzufügen"');
+      } else {
+        alert('📲 Installation:\n\nÖffne das Browser-Menü (⋮) und wähle „App installieren" oder „Zum Startbildschirm hinzufügen".');
+      }
+    }
+  };
+})();
+
 </script>
 </body>
 </html>
