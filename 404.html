@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 – Seite nicht gefunden</title>
+
+<style>
+  :root {
+    --bg: #0c0c0f;
+    --glass: rgba(255, 255, 255, 0.08);
+    --accent: #4cff9d;
+    --shadow: rgba(0,0,0,0.5);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; font-family: Inter, system-ui, sans-serif; }
+
+  body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #111, #05050a);
+    overflow: hidden;
+  }
+
+  .glass-card {
+    position: relative;
+    backdrop-filter: blur(20px);
+    background: var(--glass);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 30px;
+    padding: 60px 80px;
+    text-align: center;
+    box-shadow: 0 0 40px var(--shadow);
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+  }
+
+  h1 {
+    font-size: 120px;
+    font-weight: 900;
+    background: linear-gradient(45deg, white, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -3px;
+    animation: glitch 2s infinite;
+  }
+
+  h2 {
+    margin-top: -10px;
+    font-weight: 500;
+    opacity: 0.8;
+    font-size: 24px;
+  }
+
+  p {
+    margin-top: 15px;
+    opacity: 0.6;
+    font-size: 16px;
+  }
+
+  a.btn {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 14px 30px;
+    border-radius: 15px;
+    background: var(--accent);
+    color: black;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  a.btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(76,255,157,0.4);
+  }
+
+  /* Glitch effect */
+  @keyframes glitch {
+    0% { clip: rect(0,9999px,0,0); transform: translate(0);}
+    10% { clip: rect(10px,9999px,90px,0); transform: translate(-5px, -5px);}
+    20% { clip: rect(85px,9999px,140px,0); transform: translate(5px, 5px);}
+    30% { clip: rect(30px,9999px,80px,0); transform: translate(-5px, 0);}
+    40% { clip: rect(60px,9999px,120px,0); transform: translate(5px, -5px);}
+    50% { clip: rect(0,9999px,0,0); transform: translate(0);}
+    100% { clip: rect(0,9999px,0,0); transform: translate(0);}
+  }
+
+</style>
+</head>
+<body>
+
+<div class="glass-card">
+  <h1>404</h1>
+  <h2>Seite nicht gefunden</h2>
+  <p>Ups… diese Seite existiert nicht oder wurde verschoben.</p>
+  <a href="/" class="btn">Zur Startseite</a>
+</div>
+
+</body>
+</html>
