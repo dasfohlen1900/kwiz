@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>About</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+    /* Basis-Schrift für den gesamten Text (Inter) */
+    body, #content {
+        font-family: 'Inter', sans-serif;
+        font-size: 18px;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    /* Schicke Serif-Schrift für alle Überschriften im Markdown (Playfair) */
+    #content h1, 
+    #content h2, 
+    #content h3 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        margin-top: 1.5em;
+        color: #1a1a1a;
+    }
+
+    /* Optional: Fettgedrucktes im Text etwas hervorheben */
+    #content strong {
+        font-weight: 700;
+        color: #000;
+    }
+</style>
+</head>
+<body>
+
+    <h1>Über</h1>
+    <div id="content">Wird geladen...</div>
+
+    <script>
+        async function loadMarkdown() {
+            const contentDiv = document.getElementById('content');
+            try {
+                // 2. MD-Datei abrufen
+                const response = await fetch('about.md');
+                
+                if (!response.ok) throw new Error('Datei nicht gefunden');
+
+                const markdownText = await response.text();
+
+                // 3. In HTML umwandeln und einfügen
+                contentDiv.innerHTML = marked.parse(markdownText);
+            } catch (error) {
+                contentDiv.innerHTML = "<p style='color:red;'>Fehler: " + error.message + "</p>";
+            }
+        }
+
+        loadMarkdown();
+    </script>
+
+</body>
+</html>
