@@ -1030,7 +1030,7 @@ function validateQ(q){
 async function loadMyQuizzes(){
   const list=document.getElementById('quizLibList');
   if(!currentUser||currentUser.isAnonymous){
-    list.innerHTML=`<div class="card" style="text-align:center"><p style="font-size:40px;margin-bottom:8px">🔒</p><p class="muted">Bitte einloggen um Quizze zu speichern.</p><button class="btn btn-blue" onclick="showScreen('authScreen')" style="margin-top:16px">Zum Login</button></div>`;
+    list.innerHTML=`<div class="card" style="text-align:center"><p style="font-size:40px;margin-bottom:8px">🔒</p><p class="muted">Bitte einloggen um Quizze zu speichern.</p><button class="btn btn-blue" onclick="goToAuth()" style="margin-top:16px">Zum Login</button></div>`;
     return;
   }
   list.innerHTML='<p style="text-align:center;margin-top:32px"><div class="spinner" style="margin:auto"></div></p>';
@@ -1340,45 +1340,55 @@ function listenAsPlayer(){
 async function loadSoloQuizzes(){
   const list=document.getElementById('soloQuizList');
   if(!currentUser||currentUser.isAnonymous){
-    list.innerHTML='<div class="card" style="text-align:center">'+
-      '<p style="font-size:48px;margin-bottom:12px">🔒</p>'+
-      '<p style="font-weight:800;font-size:16px;margin-bottom:8px">Anmeldung erforderlich</p>'+
-      '<p class="muted" style="margin-bottom:20px">Erstelle einen Account und speichere eigene Quizze, um sie solo zu spielen.</p>'+
-      '<div style="display:flex;flex-direction:column;gap:10px">'+
-      '<button class="btn btn-blue" onclick="showScreen(\'authScreen\')">🔑 Anmelden / Registrieren</button>'+
-      '<button class="btn btn-ghost" onclick="goCreateQuiz()">✏️ Quiz erstellen</button>'+
-      '</div></div>';
+    list.innerHTML='<div class="card" style="text-align:center">'
+      +'<p style="font-size:48px;margin-bottom:12px">🔒</p>'
+      +'<p style="font-weight:800;font-size:16px;margin-bottom:8px">Anmeldung erforderlich</p>'
+      +'<p class="muted" style="margin-bottom:20px">Erstelle einen Account und speichere eigene Quizze, um sie solo zu spielen.</p>'
+      +'<div style="display:flex;flex-direction:column;gap:10px">'
+      +'<button class="btn btn-blue" onclick="goToAuth()">&#x1F511; Anmelden / Registrieren</button>'
+      +'<button class="btn btn-ghost" onclick="goCreateQuiz()">&#x270F;&#xFE0F; Quiz erstellen</button>'
+      +'</div></div>';
     return;
   }
   list.innerHTML='<div style="text-align:center;padding:40px"><div class="spinner" style="margin:auto"></div></div>';
   try{
     const data=await dbGet('users/'+currentUser.uid+'/quizzes');
     if(!data){
-      list.innerHTML='<div style="text-align:center;padding:40px 20px">'+
-        '<div style="font-size:64px;margin-bottom:16px">📭</div>'+
-        '<p style="font-weight:800;font-size:18px;margin-bottom:8px">Noch keine Quizze</p>'+
-        '<p class="muted" style="margin-bottom:24px">Erstelle zuerst ein Quiz, dann kannst du es hier solo spielen.</p>'+
-        '<button class="btn btn-green" onclick="goCreateQuiz()" style="width:auto;padding:12px 32px">✏️ Quiz erstellen</button></div>';
+      list.innerHTML='<div style="text-align:center;padding:40px 20px">'
+        +'<div style="font-size:64px;margin-bottom:16px">📭</div>'
+        +'<p style="font-weight:800;font-size:18px;margin-bottom:8px">Noch keine Quizze</p>'
+        +'<p class="muted" style="margin-bottom:24px">Erstelle zuerst ein Quiz, dann kannst du es hier solo spielen.</p>'
+        +'<button class="btn btn-green" onclick="goCreateQuiz()" style="width:auto;padding:12px 32px">&#x270F;&#xFE0F; Quiz erstellen</button></div>';
       return;
     }
+    const typeIcons={mc:'&#x1F535;',tf:'&#x2705;',info:'&#x1F4CA;',mc_multi:'&#x2611;&#xFE0F;',estimate:'&#x1F3AF;',input:'&#x2328;&#xFE0F;',slider:'&#x1F39A;&#xFE0F;'};
     const quizzes=Object.values(data).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
-    list.innerHTML=quizzes.map(function(qz){
-      const qc=(qz.questions||[]).filter(function(q){return q.type!=='info';}).length;
-      const types=[...new Set((qz.questions||[]).map(function(q){return q.type;}))];
-      const typeIcons={mc:'🔵',tf:'✅',info:'📊',estimate:'🎯',input:'⌨️',slider:'🎚️'};
-      const typeStr=types.map(function(t){return typeIcons[t]||'';}).join(' ');
+    list.innerHTML=quizzes.map(qz=>{
+      const qc=(qz.questions||[]).filter(q=>q.type!=='info').length;
+      const types=[...new Set((qz.questions||[]).map(q=>q.type))];
+      const typeStr=types.map(t=>typeIcons[t]||'').join(' ');
       const dt=qz.updatedAt?new Date(qz.updatedAt).toLocaleDateString('de-DE'):'';
-      const id=qz.id;
-      return '<div class="quiz-lib-item" onclick="startSoloWithQuiz(''+id+'')">'+
-        '<div class="quiz-lib-icon" style="font-size:26px">'+(qz.emoji||'🎯')+'</div>'+
-        '<div class="quiz-lib-info">'+
-        '<div class="quiz-lib-title">'+esc(qz.title||'Ohne Titel')+'</div>'+
-        '<div class="quiz-lib-meta">'+qc+' Frage'+(qc!==1?'n':'')+' '+typeStr+(dt?' · '+dt:'')+'</div>'+
-        '</div>'+
-        '<button class="btn btn-green btn-xs" style="flex-shrink:0" onclick="event.stopPropagation();startSoloWithQuiz(''+id+'')">▶ Spielen</button>'+
-        '</div>';
+      const safeId=encodeURIComponent(qz.id||'');
+      const safeTitle=esc(qz.title||'Ohne Titel');
+      const emoji=esc(qz.emoji||'&#x1F3AF;');
+      return '<div class="quiz-lib-item" onclick="startSoloById(this)"'
+        +' data-qid="'+safeId+'">'
+        +'<div class="quiz-lib-icon" style="font-size:26px">'+emoji+'</div>'
+        +'<div class="quiz-lib-info">'
+        +'<div class="quiz-lib-title">'+safeTitle+'</div>'
+        +'<div class="quiz-lib-meta">'+qc+' Frage'+(qc!==1?'n':'')+' '+typeStr+(dt?' &middot; '+dt:'')+'</div>'
+        +'</div>'
+        +'<button class="btn btn-green btn-xs" style="flex-shrink:0"'
+        +' onclick="event.stopPropagation();startSoloById(this.closest(\'.quiz-lib-item\')">'
+        +'&#x25B6; Spielen</button>'
+        +'</div>';
     }).join('');
   }catch(e){list.innerHTML='<p class="muted" style="text-align:center">Fehler: '+e.message+'</p>';}
+}
+function goToAuth(){showScreen('authScreen');}
+function startSoloById(el){
+  const qid=decodeURIComponent(el.getAttribute('data-qid'));
+  startSoloWithQuiz(qid);
 }
 
 async function startSoloWithQuiz(qid){
