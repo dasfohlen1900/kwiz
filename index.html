@@ -8,8 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="KWIZ!">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" id="pwaManifest">
-<link rel="icon" href="/kwiz-icon.ico" type="image/x-icon">
-<link rel="apple-touch-icon" href="/kwiz-apple.png" id="appleTouchIcon">
+<link rel="apple-touch-icon" id="appleTouchIcon">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KWIZ! — Multiplayer Quiz</title>
 <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Inter:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -183,6 +182,7 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .type-estimate{background:rgba(255,149,0,.2);color:var(--orange)}
 .type-slider{background:rgba(255,59,92,.2);color:var(--red)}
 .type-input{background:rgba(255,204,0,.2);color:var(--yellow)}
+.type-mc_multi{background:rgba(176,109,255,.2);color:var(--purple)}
 .ans-grid-editor{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .ans-item{display:flex;align-items:center;gap:8px}
 .ans-shape{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer}
@@ -244,6 +244,16 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .tf-btn.tf-true{background:linear-gradient(135deg,#00b86e,#007a4a);box-shadow:0 8px 30px rgba(0,184,110,.5)}
 .tf-btn.tf-false{background:linear-gradient(135deg,#e6213a,#9a0020);box-shadow:0 8px 30px rgba(230,33,58,.5)}
 .tf-btn .tf-icon{font-size:42px}.tf-btn.dimmed{opacity:.3;filter:grayscale(.5)}.tf-btn.selected{outline:5px solid #fff}
+
+
+/* Multi-select answer buttons */
+.ans-play-btn.multi-selected{outline:4px solid #fff;background-image:linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,.15))}
+.ans-play-btn .check-icon{margin-left:auto;font-size:20px;opacity:0;transition:opacity .15s}
+.ans-play-btn.multi-selected .check-icon{opacity:1}
+.multi-submit-wrap{margin-top:16px;max-width:700px;width:100%;display:flex;justify-content:center}
+.multi-submit-btn{background:linear-gradient(135deg,var(--purple),var(--blue));border:none;border-radius:14px;padding:14px 40px;font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .2s;box-shadow:0 6px 20px rgba(176,109,255,.4)}
+.multi-submit-btn:hover:not(:disabled){transform:translateY(-2px)}
+.multi-submit-btn:disabled{opacity:.4;cursor:not-allowed}
 
 /* ── ESTIMATE / INPUT / SLIDER ── */
 .pro-question-wrap{max-width:600px;width:100%}
@@ -440,9 +450,6 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
   <button class="pm-item danger" onclick="pmLogout()">
     <span class="pm-icon">👋</span><span class="pm-label">Abmelden</span>
   </button>
-  <a class="button">
-    <span class="pm-icon">ℹ️</span><span class="pm-label">Über</span>
-  </a>
 </div>
 <div class="conn-pill" id="connPill">
   <div class="conn-dot live"></div>
@@ -495,8 +502,8 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
     <div class="mode-card" onclick="showScreen('myQuizzes');loadMyQuizzes()">
       <div class="icon">📚</div><div class="title">Meine Quizze</div><div class="desc" id="myQuizzesDesc">Gespeicherte Quizze</div>
     </div>
-    <div class="mode-card" onclick="startSolo()">
-      <div class="icon">🧠</div><div class="title">Solo Demo</div><div class="desc">Demo-Quiz testen</div>
+    <div class="mode-card" onclick="showScreen('soloScreen');loadSoloQuizzes()">
+      <div class="icon">🧠</div><div class="title">Solo spielen</div><div class="desc">Eigenes Quiz alleine testen</div>
     </div>
   </div>
   <button class="btn btn-pro" style="max-width:480px;margin-top:4px" id="homeProBtn" onclick="handleHomeProBtn()">⚡ KWIZ! Pro – Neue Fragetypen freischalten</button>
@@ -517,6 +524,17 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
     </div>
   </div>
   <div id="quizLibList" style="width:100%;max-width:580px;padding-top:8px">
+    <p class="muted" style="text-align:center;margin-top:24px">Lade...</p>
+  </div>
+</div>
+
+<!-- SOLO QUIZ PICKER -->
+<div id="soloScreen" class="screen" style="justify-content:flex-start;padding:80px 20px 40px">
+  <div class="mq-header">
+    <button class="btn btn-ghost btn-sm" style="width:auto" onclick="showScreen('home')">← Zurück</button>
+    <h2>🧠 Solo spielen</h2>
+  </div>
+  <div id="soloQuizList" style="width:100%;max-width:580px;padding-top:8px">
     <p class="muted" style="text-align:center;margin-top:24px">Lade...</p>
   </div>
 </div>
@@ -552,6 +570,7 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
     <!-- Pro types -->
     <div class="pro-section-label" id="proSectionLabel"><span>⚡ Pro-Fragetypen</span></div>
     <div class="add-q-types-pro">
+      <div class="add-type-btn pro-type" onclick="guardedAddPro('mc_multi')"><div class="i">☑️</div>Mehrfachauswahl<div class="pro-type-corner" id="pCorner0">PRO</div></div>
       <div class="add-type-btn pro-type" onclick="guardedAddPro('estimate')"><div class="i">🎯</div>Schätzfrage<div class="pro-type-corner" id="pCorner1">PRO</div></div>
       <div class="add-type-btn pro-type" onclick="guardedAddPro('input')"><div class="i">⌨️</div>Freitexteingabe<div class="pro-type-corner" id="pCorner2">PRO</div></div>
       <div class="add-type-btn pro-type" onclick="guardedAddPro('slider')"><div class="i">🎚️</div>Schieberegler<div class="pro-type-corner" id="pCorner3">PRO</div></div>
@@ -739,16 +758,7 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 const BASE_URL='https://kwiz-app-five.vercel.app/';
 const SHAPES=['▲','◆','●','■'];
 const ANS_COLORS=['#e6213a','#1368ce','#1a8a4a','#d97706'];
-const DEMO_Q=[
-  {type:'info',icon:'🌍',title:'Geografie',body:'Testen wir euer <strong>geografisches Wissen</strong>. Hauptstädte, Länder — seid ihr bereit?',time:12},
-  {q:'Was ist die Hauptstadt von Deutschland?',type:'mc',answers:['München','Berlin','Hamburg','Frankfurt'],correct:1,time:20},
-  {q:'Australien ist sowohl ein Land als auch ein Kontinent.',type:'tf',correct:1,time:15},
-  {q:'Welche Sprache wird in Brasilien gesprochen?',type:'mc',answers:['Spanisch','Englisch','Portugiesisch','Französisch'],correct:2,time:20},
-  {type:'estimate',q:'Wie viele Einwohner hat Deutschland (in Millionen)?',correctValue:84,unit:'Millionen',min:50,max:150,time:25},
-  {type:'input',q:'Wie heißt die chemische Formel für Wasser?',correctText:'H2O',caseSensitive:false,time:20},
-  {type:'slider',q:'Wie viel Prozent der Erdoberfläche ist Wasser?',correctValue:71,min:0,max:100,unit:'%',time:25},
-  {q:'Was ist 12 × 12?',type:'mc',answers:['132','144','124','148'],correct:1,time:15},
-];
+// DEMO_Q removed — Solo mode now uses saved quizzes
 
 let fbDb=null, fbAuth=null, currentUser=null, unsubRoom=null, currentEditId=null;
 let S={role:null,code:null,name:null,score:0,streak:0,selected:null,timerIv:null,timeLeft:0,startTs:0,qIdx:0,lastPhase:null};
@@ -771,7 +781,7 @@ function updateProUI(){
       homeBtn.style.boxShadow='0 8px 28px rgba(0,214,143,.4)';
     }
     if(label) label.querySelector('span').innerHTML='⚡ Pro-Fragetypen <span style="font-size:10px;color:var(--green);background:rgba(0,214,143,.15);padding:2px 6px;border-radius:6px;margin-left:4px">✅ AKTIV</span>';
-    ['pCorner1','pCorner2','pCorner3'].forEach(id=>{
+    ['pCorner0','pCorner1','pCorner2','pCorner3'].forEach(id=>{
       const el=document.getElementById(id);
       if(el){el.style.background='linear-gradient(135deg,#00d68f,#007a4a)';}
     });
@@ -782,7 +792,7 @@ function updateProUI(){
       homeBtn.style.background='';homeBtn.style.boxShadow='';
     }
     if(label) label.querySelector('span').innerHTML='⚡ Pro-Fragetypen <span style="font-size:10px;color:var(--muted);background:rgba(255,255,255,.06);padding:2px 6px;border-radius:6px;margin-left:4px">🔒 Gesperrt</span>';
-    ['pCorner1','pCorner2','pCorner3'].forEach(id=>{
+    ['pCorner0','pCorner1','pCorner2','pCorner3'].forEach(id=>{
       const el=document.getElementById(id);
       if(el){el.style.background='';}
     });
@@ -1010,6 +1020,7 @@ async function saveQuizToAccount(showMsg=true){
 function validateQ(q){
   if(q.type==='info') return(q.title||q.body||'').trim();
   if(q.type==='tf')   return(q.q||'').trim();
+  if(q.type==='mc_multi') return(q.q||'').trim()&&q.answers.every(a=>(a||'').trim())&&q.correct&&q.correct.length>0;
   if(q.type==='estimate') return(q.q||'').trim()&&q.correctValue!=null;
   if(q.type==='input') return(q.q||'').trim()&&(q.correctText||'').trim();
   if(q.type==='slider') return(q.q||'').trim()&&q.correctValue!=null;
@@ -1109,7 +1120,8 @@ function addQuestion(type='mc'){
   setTimeout(()=>document.querySelectorAll('.q-card')[editorQs.length-1]?.scrollIntoView({behavior:'smooth',block:'center'}),60);
 }
 function addProQuestion(type){
-  if(type==='estimate') editorQs.push({type:'estimate',q:'',correctValue:0,unit:'',min:0,max:100,time:25});
+  if(type==='mc_multi') editorQs.push({type:'mc_multi',q:'',answers:['','','',''],correct:[0],time:25});
+  else if(type==='estimate') editorQs.push({type:'estimate',q:'',correctValue:0,unit:'',min:0,max:100,time:25});
   else if(type==='input') editorQs.push({type:'input',q:'',correctText:'',caseSensitive:false,time:20});
   else if(type==='slider') editorQs.push({type:'slider',q:'',correctValue:50,min:0,max:100,unit:'',time:25});
   renderEditor();
@@ -1129,8 +1141,8 @@ function renderEditor(){
   if(!editorQs.length){list.innerHTML='<p class="muted" style="text-align:center;margin:20px 0">Noch keine Elemente. Wähle einen Typ unten.</p>';return;}
   list.innerHTML=editorQs.map((q,i)=>{
     const type=q.type||'mc';
-    const lblMap={mc:'Multiple Choice',tf:'Wahr / Falsch',info:'Infofolie',estimate:'Schätzfrage',input:'Freitexteingabe',slider:'Schieberegler'};
-    const clsMap={mc:'type-mc',tf:'type-tf',info:'type-info',estimate:'type-estimate',input:'type-input',slider:'type-slider'};
+    const lblMap={mc:'Multiple Choice',tf:'Wahr / Falsch',info:'Infofolie',mc_multi:'Mehrfachauswahl',estimate:'Schätzfrage',input:'Freitexteingabe',slider:'Schieberegler'};
+    const clsMap={mc:'type-mc',tf:'type-tf',info:'type-info',mc_multi:'type-mc_multi',estimate:'type-estimate',input:'type-input',slider:'type-slider'};
     const lbl=lblMap[type]||'Frage'; const cls=clsMap[type]||'type-mc';
     const to=[10,15,20,30].map(t=>`<button class="time-opt ${q.time===t?'sel':''}" onclick="setTime(${i},${t})">${t}s</button>`).join('');
     let c='';
@@ -1141,6 +1153,24 @@ function renderEditor(){
         <input class="input" style="flex:1;padding:10px 12px;font-size:14px" placeholder="Antwort ${j+1}..." value="${esc(a)}" oninput="editorQs[${i}].answers[${j}]=this.value">
       </div>`).join('')}</div>
       <p style="font-size:11px;color:var(--muted);margin-top:10px">Symbol anklicken = richtige Antwort (aktuell: <strong>${SHAPES[q.correct]}</strong>)</p>
+      <div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>`;
+    } else if(type==='mc_multi'){
+      // toggle correct answers
+      const toggleCorrect=(i,j)=>{
+        const idx=editorQs[i].correct.indexOf(j);
+        if(idx>=0) editorQs[i].correct.splice(idx,1); else editorQs[i].correct.push(j);
+        renderEditor();
+      };
+      c=`<div class="lbl">Frage <span style="font-size:10px;color:var(--purple);margin-left:4px">☑️ Mehrere richtige Antworten möglich</span></div>
+      <input class="input" placeholder="Deine Frage mit mehreren richtigen Antworten..." value="${esc(q.q)}" oninput="editorQs[${i}].q=this.value">
+      <div class="ans-grid-editor mt8">${q.answers.map((a,j)=>{
+        const isCor=(q.correct||[]).includes(j);
+        return '<div class="ans-item">'+
+          '<div class="ans-shape '+(isCor?'correct':'')+'" style="background:'+(isCor?'#b06dff':'rgba(176,109,255,.3)')+';cursor:pointer" onclick="(()=>{const idx=editorQs['+i+'].correct.indexOf('+j+');if(idx>=0)editorQs['+i+'].correct.splice(idx,1);else editorQs['+i+'].correct.push('+j+');renderEditor();})()">'+SHAPES[j]+'</div>'+
+          '<input class="input" style="flex:1;padding:10px 12px;font-size:14px" placeholder="Antwort '+(j+1)+'..." value="'+esc(a)+'" oninput="editorQs['+i+'].answers['+j+']=this.value">'+
+          '</div>';
+      }).join('')}</div>
+      <p style="font-size:11px;color:var(--muted);margin-top:10px">Symbol anklicken = richtige Antwort ein-/ausschalten (lila = richtig)</p>
       <div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>`;
     } else if(type==='tf'){
       c=`<div class="lbl">Aussage</div><input class="input" placeholder="Diese Aussage ist wahr oder falsch..." value="${esc(q.q)}" oninput="editorQs[${i}].q=this.value">
@@ -1307,11 +1337,62 @@ function listenAsPlayer(){
 }
 
 // ─── SOLO ───────────────────────────────────
-async function startSolo(){
+async function loadSoloQuizzes(){
+  const list=document.getElementById('soloQuizList');
+  if(!currentUser||currentUser.isAnonymous){
+    list.innerHTML='<div class="card" style="text-align:center">'+
+      '<p style="font-size:48px;margin-bottom:12px">🔒</p>'+
+      '<p style="font-weight:800;font-size:16px;margin-bottom:8px">Anmeldung erforderlich</p>'+
+      '<p class="muted" style="margin-bottom:20px">Erstelle einen Account und speichere eigene Quizze, um sie solo zu spielen.</p>'+
+      '<div style="display:flex;flex-direction:column;gap:10px">'+
+      '<button class="btn btn-blue" onclick="showScreen(\'authScreen\')">🔑 Anmelden / Registrieren</button>'+
+      '<button class="btn btn-ghost" onclick="goCreateQuiz()">✏️ Quiz erstellen</button>'+
+      '</div></div>';
+    return;
+  }
+  list.innerHTML='<div style="text-align:center;padding:40px"><div class="spinner" style="margin:auto"></div></div>';
+  try{
+    const data=await dbGet('users/'+currentUser.uid+'/quizzes');
+    if(!data){
+      list.innerHTML='<div style="text-align:center;padding:40px 20px">'+
+        '<div style="font-size:64px;margin-bottom:16px">📭</div>'+
+        '<p style="font-weight:800;font-size:18px;margin-bottom:8px">Noch keine Quizze</p>'+
+        '<p class="muted" style="margin-bottom:24px">Erstelle zuerst ein Quiz, dann kannst du es hier solo spielen.</p>'+
+        '<button class="btn btn-green" onclick="goCreateQuiz()" style="width:auto;padding:12px 32px">✏️ Quiz erstellen</button></div>';
+      return;
+    }
+    const quizzes=Object.values(data).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+    list.innerHTML=quizzes.map(function(qz){
+      const qc=(qz.questions||[]).filter(function(q){return q.type!=='info';}).length;
+      const types=[...new Set((qz.questions||[]).map(function(q){return q.type;}))];
+      const typeIcons={mc:'🔵',tf:'✅',info:'📊',estimate:'🎯',input:'⌨️',slider:'🎚️'};
+      const typeStr=types.map(function(t){return typeIcons[t]||'';}).join(' ');
+      const dt=qz.updatedAt?new Date(qz.updatedAt).toLocaleDateString('de-DE'):'';
+      const id=qz.id;
+      return '<div class="quiz-lib-item" onclick="startSoloWithQuiz(''+id+'')">'+
+        '<div class="quiz-lib-icon" style="font-size:26px">'+(qz.emoji||'🎯')+'</div>'+
+        '<div class="quiz-lib-info">'+
+        '<div class="quiz-lib-title">'+esc(qz.title||'Ohne Titel')+'</div>'+
+        '<div class="quiz-lib-meta">'+qc+' Frage'+(qc!==1?'n':'')+' '+typeStr+(dt?' · '+dt:'')+'</div>'+
+        '</div>'+
+        '<button class="btn btn-green btn-xs" style="flex-shrink:0" onclick="event.stopPropagation();startSoloWithQuiz(''+id+'')">▶ Spielen</button>'+
+        '</div>';
+    }).join('');
+  }catch(e){list.innerHTML='<p class="muted" style="text-align:center">Fehler: '+e.message+'</p>';}
+}
+
+async function startSoloWithQuiz(qid){
+  let questions;
+  try{
+    const qz=await dbGet('users/'+currentUser.uid+'/quizzes/'+qid);
+    if(!qz||!qz.questions||!qz.questions.length){toast('Quiz nicht gefunden!','var(--red)');return;}
+    questions=qz.questions;
+  }catch(e){toast('Fehler: '+e.message,'var(--red)');return;}
   const code='SOLO'+Date.now();
-  const name=currentUser?.displayName||'Du';
+  const name=currentUser&&currentUser.displayName?currentUser.displayName:'Du';
   S.code=code;S.role='solo';S.name=name;S.score=0;S.streak=0;S.qIdx=0;S.lastPhase=null;
-  await dbSet(rp(code),{code,title:'Solo Demo',questions:DEMO_Q,players:{[name]:{name,score:0,streak:0,correct:0}},phase:'question',currentQ:0,questionStartTime:Date.now(),answers:{}});
+  const players={};players[name]={name:name,score:0,streak:0,correct:0};
+  await dbSet(rp(code),{code:code,title:'Solo',questions:questions,players:players,phase:'question',currentQ:0,questionStartTime:Date.now(),answers:{}});
   showQuestion(0,'player');listenAsPlayer();
 }
 
@@ -1321,6 +1402,7 @@ async function showQuestion(qIdx,mode){
   const q=room.questions[qIdx];if(!q) return;
   if(q.type==='info'){mode==='host'?showHostInfoSlide(q,qIdx,room.questions.length):showPlayerInfoSlide(room);return;}
   S.selected=null;
+  multiSelected=[];
   const total=room.questions.length,pct=(qIdx/total)*100;
   const isTF=q.type==='tf',isEstimate=q.type==='estimate',isInput=q.type==='input',isSlider=q.type==='slider';
 
@@ -1332,6 +1414,7 @@ async function showQuestion(qIdx,mode){
     document.getElementById('hqText').textContent=q.q;
     let ansHtml='';
     if(isTF) ansHtml=`<div class="tf-grid"><button class="tf-btn tf-true" disabled><span class="tf-icon">✅</span>WAHR</button><button class="tf-btn tf-false" disabled><span class="tf-icon">❌</span>FALSCH</button></div>`;
+    else if(q.type==='mc_multi') ansHtml='<div class="ans-play-grid">'+q.answers.map((a,i)=>'<button class="ans-play-btn" data-c="'+i+'" disabled><span class="shape">'+SHAPES[i]+'</span><span>'+esc(a)+'</span>'+(q.correct&&q.correct.includes(i)?'<span style="margin-left:auto;font-size:18px">☑️</span>':'')+' </button>').join('')+'</div>';
     else if(isEstimate||isInput||isSlider) ansHtml=`<div style="text-align:center;padding:16px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;max-width:400px">
       <div style="font-size:40px;margin-bottom:8px">${isEstimate?'🎯':isInput?'⌨️':'🎚️'}</div>
       <p style="color:var(--muted);font-size:14px;font-weight:700">Spieler geben ihre Antwort ein</p>
@@ -1378,6 +1461,9 @@ async function showQuestion(qIdx,mode){
           <button class="submit-answer-btn" onclick="submitSlider(${qIdx})" id="submitSliderBtn">🎚️ Bestätigen</button>
         </div>
       </div>`;
+    } else if(q.type==='mc_multi'){
+      ansHtml='<div class="ans-play-grid">'+q.answers.map((a,i)=>'<button class="ans-play-btn" id="mca'+i+'" data-c="'+i+'" onclick="toggleMultiAnswer('+i+','+qIdx+')"><span class="shape">'+SHAPES[i]+'</span><span style="flex:1">'+esc(a)+'</span><span class="check-icon">✓</span></button>').join('')+'</div>'+
+        '<div class="multi-submit-wrap"><button class="multi-submit-btn" id="multiSubmitBtn" onclick="submitMultiAnswer('+qIdx+')" disabled>☑️ Auswahl bestätigen</button></div>';
     } else {
       ansHtml=`<div class="ans-play-grid">`+q.answers.map((a,i)=>`<button class="ans-play-btn" data-c="${i}" onclick="submitAnswer(${i},${qIdx})"><span class="shape">${SHAPES[i]}</span><span>${esc(a)}</span></button>`).join('')+`</div>`;
     }
@@ -1434,6 +1520,26 @@ function startTimer(secs,mode,qIdx){
 }
 
 // ─── ANSWERING ──────────────────────────────
+// Multi-select state
+let multiSelected=[];
+function toggleMultiAnswer(idx,qIdx){
+  if(S.selected!==null) return;
+  const i=multiSelected.indexOf(idx);
+  if(i>=0) multiSelected.splice(i,1); else multiSelected.push(idx);
+  document.querySelectorAll('#pqAnswers .ans-play-btn').forEach((b,bi)=>{
+    b.classList.toggle('multi-selected',multiSelected.includes(bi));
+  });
+  const btn=document.getElementById('multiSubmitBtn');
+  if(btn) btn.disabled=multiSelected.length===0;
+}
+async function submitMultiAnswer(qIdx){
+  if(S.selected!==null||multiSelected.length===0) return;
+  clearInterval(S.timerIv);
+  S.selected=multiSelected.slice();
+  document.querySelectorAll('#pqAnswers .ans-play-btn').forEach(b=>{b.disabled=true;});
+  const btn=document.getElementById('multiSubmitBtn');if(btn){btn.disabled=true;btn.textContent='✅ Gesendet!';}
+  await recordAnswer(multiSelected.slice(),qIdx);
+}
 async function submitAnswer(ansIdx,qIdx){
   if(S.selected!==null) return;
   clearInterval(S.timerIv);S.selected=ansIdx;
@@ -1479,7 +1585,21 @@ async function recordAnswer(ansVal,qIdx){
   const elapsed=Math.max(0,(Date.now()-(room.questionStartTime||S.startTs))/1000);
   let ok=false,pts=0,proximity=null;
 
-  if(type==='mc'||type==='tf'){
+  if(type==='mc_multi'){
+    const selected=Array.isArray(ansVal)?ansVal:[];
+    const correctSet=new Set(q.correct||[]);
+    const selectedSet=new Set(selected);
+    const allCorrect=[...correctSet].every(x=>selectedSet.has(x))&&[...selectedSet].every(x=>correctSet.has(x));
+    const partial=[...correctSet].filter(x=>selectedSet.has(x)).length;
+    const wrong=[...selectedSet].filter(x=>!correctSet.has(x)).length;
+    ok=allCorrect;
+    if(ok){
+      const tBonus=Math.floor(Math.max(0,(q.time-elapsed)/q.time)*500);
+      pts=500+tBonus;
+    } else if(partial>0&&wrong===0){
+      pts=Math.round(300*(partial/correctSet.size));
+    } else {pts=0;}
+  } else if(type==='mc'||type==='tf'){
     ok=ansVal===q.correct;
     const tBonus=ok?Math.floor(Math.max(0,(q.time-elapsed)/q.time)*500):0;
     const sBonus=(ok&&S.streak>=2)?100:0;
@@ -1528,6 +1648,7 @@ async function showHostReveal(room,qIdx){
   let lbl='';
   if(type==='tf') lbl=q.correct===1?'✅ WAHR':'❌ FALSCH';
   else if(type==='mc') lbl=`${SHAPES[q.correct]} ${esc(q.answers[q.correct])}`;
+  else if(type==='mc_multi') lbl=(q.correct||[]).map(i=>SHAPES[i]+' '+esc(q.answers[i])).join(' &amp; ');
   else if(type==='estimate'||type==='slider') lbl=`${q.correctValue} ${q.unit||''}`;
   else if(type==='input') lbl=esc(q.correctText);
 
@@ -1572,7 +1693,19 @@ function showPlayerReveal(room){
 
   document.getElementById('prCorrect').innerHTML=`Richtige Antwort: <strong>${lbl}</strong>`;
 
-  if(type==='estimate'||type==='slider'){
+  if(type==='mc_multi'){
+    document.getElementById('prIcon').textContent=ok?'🎉':(pts>0?'⭐':'💔');
+    document.getElementById('prTitle').textContent=ok?'Alles richtig!':(pts>0?'Teilweise richtig!':'Falsch!');
+    document.getElementById('prTitle').style.color=ok?'var(--green)':(pts>0?'var(--yellow)':'var(--red)');
+    if(pts>0){
+      document.getElementById('prBase').textContent='+'+pts;
+      document.getElementById('prTime').textContent='';
+      document.getElementById('prStreakLbl').textContent='';
+      document.getElementById('prStreakPts').textContent='';
+      document.getElementById('prTotal').textContent='+'+pts;
+      document.getElementById('prPts').style.display='';
+    } else document.getElementById('prPts').style.display='none';
+  } else if(type==='estimate'||type==='slider'){
     document.getElementById('prIcon').textContent=ok?'🎯':(S.selected===-1?'⏰':'🎰');
     document.getElementById('prTitle').textContent=ok?'Super nah dran!':`Dein Tipp: ${ans?.answer??'—'} ${q.unit||''}`;
     document.getElementById('prTitle').style.color=ok?'var(--green)':'var(--yellow)';
