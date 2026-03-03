@@ -21,7 +21,7 @@
   import { getDatabase, ref, set, get, update, onValue, off }
                                         from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-           signOut, onAuthStateChanged, updateProfile }
+           signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup }
                                         from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -39,7 +39,7 @@
   const auth = getAuth(app);
 
   window._fb   = { ref, set, get, update, onValue, off, db };
-  window._auth = { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile };
+  window._auth = { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup };
   window.dispatchEvent(new Event('fb-ready'));
 </script>
 
@@ -382,6 +382,28 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .install-step-num{width:28px;height:28px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;margin-top:2px}
 .install-step-text{font-size:13px;color:var(--text);line-height:1.5}
 
+
+/* ── GOOGLE SIGN-IN ── */
+.btn-google{background:#fff;color:#1f1f1f;border:1.5px solid #e0e0e0;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.btn-google:hover{background:#f8f8f8;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.btn-google svg{flex-shrink:0}
+
+/* ── GUEST INDICATOR ── */
+.guest-bar{background:linear-gradient(135deg,rgba(255,149,0,.12),rgba(255,204,0,.08));border:1px solid rgba(255,149,0,.3);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:16px;width:100%;max-width:480px}
+.guest-bar-icon{font-size:20px;flex-shrink:0}
+.guest-bar-text{flex:1;font-size:13px;color:rgba(240,240,255,.8);font-weight:600;line-height:1.4}
+.guest-bar-btn{background:var(--orange);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+
+/* ── LOCKED FEATURE ── */
+.feature-locked{position:relative;pointer-events:none;opacity:.45;user-select:none}
+.feature-locked::after{content:'🔒 Anmeldung erforderlich';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,8,23,.85);border-radius:inherit;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--muted);pointer-events:all;cursor:not-allowed}
+.feature-locked-btn{pointer-events:all !important;opacity:1 !important}
+
+
+.mode-card.guest-locked{opacity:.5;pointer-events:auto;position:relative}
+.mode-card.guest-locked::after{content:'\1F512';position:absolute;top:8px;right:10px;font-size:16px}
+.guest-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,149,0,.15);border:1px solid rgba(255,149,0,.3);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800;color:var(--orange)}
+
 @media(max-width:520px){
   .ans-play-grid,.tf-grid,#home .modes,.add-q-types,.add-q-types-pro,.ans-grid-editor{grid-template-columns:1fr}
   .tf-grid{gap:14px}.final-stats{flex-direction:column}.info-slide-content{padding:24px 20px}
@@ -514,13 +536,14 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
     <div class="pm-name" id="pmName">—</div>
     <div class="pm-email" id="pmEmail">—</div>
     <div style="text-align:center;margin-top:8px">
+      <span class="guest-pill" id="pmGuestBadge" style="display:none">👤 Gast</span>
       <span class="pm-pro-badge" id="pmProBadge" style="display:none">⚡ Pro aktiv</span>
     </div>
   </div>
-  <button class="pm-item" onclick="pmGoMyQuizzes()">
+  <button class="pm-item" id="pmMyQuizItem" onclick="pmGoMyQuizzes()">
     <span class="pm-icon">📚</span><span class="pm-label">Meine Quizze</span><span class="pm-arrow">›</span>
   </button>
-  <button class="pm-item" onclick="pmManagePro()">
+  <button class="pm-item" id="pmProItem" onclick="pmManagePro()">
     <span class="pm-icon" id="pmProIcon">⚡</span><span class="pm-label" id="pmProLabel">Pro freischalten</span><span class="pm-arrow">›</span>
   </button>
   <button class="pm-item" onclick="pmGoInfo()">
@@ -547,6 +570,8 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
   <div class="logo" style="font-size:44px;margin-bottom:4px"><span class="k">K</span><span>W</span><span style="opacity:.85">IZ</span><span class="bang">!</span></div>
   <p class="tagline">Willkommen</p>
   <div class="card">
+    <button class="btn btn-google" onclick="doGoogleSignIn()" id="googleTop" style="color:#1f1f1f"><svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.58-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Mit Google anmelden</button>
+    <div class="divider mt16">oder per E-Mail</div>
     <div class="auth-tabs">
       <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">🔑 Anmelden</button>
       <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">✨ Registrieren</button>
@@ -564,7 +589,12 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
       <button class="btn btn-green" onclick="doRegister()" id="registerBtn">Account erstellen</button>
     </div>
     <div class="divider mt16">oder</div>
-    <button class="btn btn-ghost btn-sm mt8" onclick="guestMode()" style="font-size:13px">👤 Als Gast spielen (ohne Speichern)</button>
+    <button class="btn btn-google mt8" onclick="doGoogleSignIn()" id="googleBtn" style="color:#1f1f1f;font-size:14px">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.58-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Mit Google anmelden
+    </button>
+    <button class="btn btn-ghost btn-sm mt8" onclick="guestMode()" style="font-size:13px;color:var(--muted)">👤 Nur beitreten (kein Account)</button>
+    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px">Als Gast nur Räumen beitreten.</p>
   </div>
 </div>
 
@@ -572,6 +602,11 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 <div id="home" class="screen">
   <div class="logo"><span class="k">K</span><span>W</span><span style="opacity:.85">IZ</span><span class="bang">!</span></div>
   <p class="tagline">Das Quiz-Battle</p>
+  <div id="guestBar" class="guest-bar" style="display:none">
+    <span class="guest-bar-icon">👤</span>
+    <div class="guest-bar-text">Du bist als Gast angemeldet.<br>Quizze erstellen & speichern erfordert einen Account.</div>
+    <button class="guest-bar-btn" onclick="goToAuth()">Anmelden →</button>
+  </div>
   <div class="modes">
     <div class="mode-card" onclick="goCreateQuiz()">
       <div class="icon">✏️</div><div class="title">Erstellen</div><div class="desc">Eigenes Quiz hosten</div>
@@ -948,6 +983,11 @@ function processPayment(){
 }
 
 function activatePro(){
+  if(currentUser&&currentUser.isAnonymous){
+    closeProModal();
+    kwizAlert({icon:'🔒',title:'Account erforderlich',body:'Pro kann nur mit einem echten Account aktiviert werden. Bitte melde dich an oder erstelle einen Account.',btnLabel:'Anmelden',btnClass:'btn-blue',onClose:goToAuth});
+    return;
+  }
   isPro=true;localStorage.setItem(PRO_KEY,'1');
   closeProModal();
   updateProUI();
@@ -970,7 +1010,7 @@ window.addEventListener('fb-ready',()=>{
     if(user){
       updateAccountPill(user);
       if(['loadingScreen','authScreen'].includes(activeScreen())){
-        showScreen('home');renderEditor();updateMyQuizzesDesc();
+        showScreen('home');renderEditor();updateMyQuizzesDesc();updateGuestUI();
       }
     } else {
       ['accPill','accPillEditor','accPillMQ'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
@@ -996,12 +1036,18 @@ function updateAccountPill(u){
   document.getElementById('pmName').textContent=nm;
   document.getElementById('pmEmail').textContent=u.email||(u.isAnonymous?'Gast-Konto':'');
   updateProfileMenuPro();
+  if(typeof updateGuestUI==='function') updateGuestUI();
 }
 function updateProfileMenuPro(){
   const badge=document.getElementById('pmProBadge');
   const icon=document.getElementById('pmProIcon');
   const lbl=document.getElementById('pmProLabel');
-  if(isPro){
+  const isGuest=currentUser&&currentUser.isAnonymous;
+  if(isGuest){
+    if(badge) badge.style.display='none';
+    if(icon) icon.textContent='🔒';
+    if(lbl) lbl.textContent='Pro (Account erforderlich)';
+  } else if(isPro){
     if(badge) badge.style.display='inline-flex';
     if(icon) icon.textContent='✅';
     if(lbl) lbl.textContent='Pro verwalten';
@@ -1034,7 +1080,7 @@ function closeProfileMenu(){
   document.getElementById('profileMenuBg').classList.remove('show');
 }
 function pmGoMyQuizzes(){closeProfileMenu();showScreen('myQuizzes');loadMyQuizzes();}
-function pmManagePro(){closeProfileMenu();if(isPro){handleHomeProBtn();}else{openProModal();}}
+function pmManagePro(){closeProfileMenu();if(currentUser&&currentUser.isAnonymous){kwizAlert({icon:'🔒',title:'Account erforderlich',body:'Pro ist nur für angemeldete Nutzer verfügbar.',btnLabel:'Anmelden',btnClass:'btn-blue',onClose:goToAuth});return;}if(isPro){handleHomeProBtn();}else{openProModal();}}
 function pmGoInfo(){closeProfileMenu();window.location.href='info.html';}
 function pmLogout(){closeProfileMenu();doLogout();}
 async function updateMyQuizzesDesc(){
@@ -1081,11 +1127,36 @@ async function doRegister(){
     await window._auth.updateProfile(c.user,{displayName:name});
   }catch(e){showAuthErr(authErr(e.code));btn.disabled=false;btn.textContent='Account erstellen';}
 }
+async function doGoogleSignIn(){
+  const btn=document.getElementById('googleBtn');
+  btn.disabled=true;btn.innerHTML='<div class="spinner" style="border-color:rgba(0,0,0,.2);border-top-color:#1f1f1f"></div>';
+  try{
+    const provider=new window._auth.GoogleAuthProvider();
+    await window._auth.signInWithPopup(window._auth.auth,provider);
+  }catch(e){
+    showAuthErr(e.code==='auth/popup-closed-by-user'?'Anmeldung abgebrochen.':authErr(e.code));
+    btn.disabled=false;
+    btn.innerHTML='<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.58-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Mit Google anmelden';
+  }
+}
 function guestMode(){
   currentUser={uid:'guest_'+Date.now(),displayName:'Gast',email:null,isAnonymous:true};
   updateAccountPill(currentUser);
   showScreen('home');renderEditor();
-  toast('Gast-Modus — Quizze werden nicht gespeichert','var(--yellow)');
+  updateGuestUI();
+  toast('Gast-Modus — nur Beitreten möglich','var(--orange)');
+}
+function guestLockAlert(){kwizAlert({icon:'🔒',title:'Account erforderlich',body:'Diese Funktion ist nur für angemeldete Nutzer. Melde dich an oder erstelle einen kostenlosen Account.',btnLabel:'Anmelden',btnClass:'btn-blue',onClose:goToAuth});}
+function updateGuestUI(){
+  const isGuest=!currentUser||currentUser.isAnonymous;
+  const g=document.getElementById('guestBar');if(g)g.style.display=isGuest?'flex':'none';
+  const gb=document.getElementById('pmGuestBadge');if(gb)gb.style.display=isGuest?'inline-flex':'none';
+  [['.mode-card[onclick*="myQuizzes"]',()=>{showScreen('myQuizzes');loadMyQuizzes();}],['.mode-card[onclick*="soloScreen"]',()=>{showScreen('soloScreen');loadSoloQuizzes();}],['.mode-card[onclick*="goCreateQuiz"]',()=>goCreateQuiz()]].forEach(([sel,fn])=>{const el=document.querySelector(sel);if(!el)return;if(isGuest){el.classList.add('guest-locked');el.onclick=guestLockAlert;}else{el.classList.remove('guest-locked');el.onclick=fn;}});
+  const pb=document.getElementById('homeProBtn');if(pb){if(isGuest){pb.style.opacity='.4';pb.style.cursor='not-allowed';pb.onclick=e=>{e.preventDefault();guestLockAlert()};}else{pb.style.opacity='';pb.style.cursor='';pb.onclick=handleHomeProBtn;}}
+  const sb=document.getElementById('saveBtn');if(sb){sb.style.opacity=isGuest?'.35':'';sb.title=isGuest?'Account erforderlich':'';}
+  const pu=document.getElementById('publishBtn');if(pu)pu.style.display=isGuest?'none':'';
+  const pi=document.getElementById('pmProItem');if(pi)pi.style.display=isGuest?'none':'';
+  updateProfileMenuPro();
 }
 async function doLogout(){
   try{await window._auth.signOut(fbAuth);}catch(e){}
@@ -1099,7 +1170,7 @@ function authErr(code){
 
 // ─── QUIZ LIBRARY ───────────────────────────
 async function saveQuizToAccount(showMsg=true){
-  if(!currentUser||currentUser.isAnonymous){toast('Bitte einloggen um zu speichern!','var(--yellow)');return;}
+  if(!currentUser||currentUser.isAnonymous){guestLockAlert();return;}
   const title=document.getElementById('quizTitle').value.trim()||'Unbenanntes Quiz';
   const emoji=document.getElementById('quizEmoji').value.trim()||'🎯';
   const valid=editorQs.filter(q=>validateQ(q));
@@ -1180,7 +1251,7 @@ async function loadQuizForEdit(qid){
 }
 async function loadAndHost(qid){await loadQuizForEdit(qid);setTimeout(startHosting,200);}
 async function publishFromLib(qid){
-  if(!currentUser||currentUser.isAnonymous){toast('Bitte einloggen!','var(--yellow)');return;}
+  if(!currentUser||currentUser.isAnonymous){guestLockAlert();return;}
   const qz=await dbGet('users/'+currentUser.uid+'/quizzes/'+qid);
   if(!qz) return;
   const _qz=qz;
@@ -2122,7 +2193,7 @@ function filterPublicLib(query){
 }
 
 async function publishCurrentQuiz(){
-  if(!currentUser||currentUser.isAnonymous){toast('Bitte einloggen!','var(--yellow)');return;}
+  if(!currentUser||currentUser.isAnonymous){guestLockAlert();return;}
   const title=document.getElementById('quizTitle')?.value.trim()||'Ohne Titel';
   const emoji=document.getElementById('quizEmoji')?.value.trim()||'🎯';
   const valid=editorQs.filter(q=>validateQ(q));
@@ -2185,7 +2256,7 @@ async function playPublicQuiz(safeId){
 }
 
 async function importPublicQuiz(safeId){
-  if(!currentUser||currentUser.isAnonymous){toast('Bitte einloggen um zu importieren!','var(--yellow)');return;}
+  if(!currentUser||currentUser.isAnonymous){guestLockAlert();return;}
   const qid=decodeURIComponent(safeId);
   const qz=await dbGet('public_quizzes/'+qid);
   if(!qz){toast('Quiz nicht gefunden!','var(--red)');return;}
