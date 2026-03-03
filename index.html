@@ -127,6 +127,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .profile-menu-bg{position:fixed;inset:0;z-index:300;display:none}
 .profile-menu-bg.show{display:block}
 .profile-menu{position:fixed;top:60px;right:16px;background:rgba(12,12,28,.97);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:8px;width:260px;z-index:301;backdrop-filter:blur(24px);box-shadow:0 20px 60px rgba(0,0,0,.6);animation:menuDrop .2s cubic-bezier(.34,1.4,.64,1)}
+@keyframes fadeOut{to{opacity:0;transform:scale(.95)}}
 @keyframes menuDrop{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 .pm-header{padding:14px 14px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:6px}
 .pm-avatar-big{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;margin:0 auto 10px;box-shadow:0 0 20px rgba(176,109,255,.4)}
@@ -377,6 +378,24 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .export-btn{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;padding:10px 18px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s}
 .export-btn:hover{background:rgba(255,255,255,.1)}
 
+
+/* ── DIALOG OVERLAY ── */
+.kwiz-dialog-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
+.kwiz-dialog-bg.show{display:flex}
+.kwiz-dialog{background:rgba(14,14,30,.98);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:32px 28px;max-width:400px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.6);text-align:center;animation:menuDrop .2s cubic-bezier(.34,1.4,.64,1)}
+.kwiz-dialog .dlg-icon{font-size:52px;margin-bottom:14px;line-height:1}
+.kwiz-dialog .dlg-title{font-family:'Righteous',cursive;font-size:22px;margin-bottom:8px}
+.kwiz-dialog .dlg-body{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.kwiz-dialog .dlg-actions{display:flex;flex-direction:column;gap:10px}
+.kwiz-dialog .dlg-actions.row{flex-direction:row}
+
+/* ── INSTALL OVERLAY ── */
+.install-steps{text-align:left;background:rgba(255,255,255,.04);border-radius:14px;padding:16px 18px;margin-bottom:20px}
+.install-step{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.install-step:last-child{border-bottom:none}
+.install-step-num{width:28px;height:28px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;margin-top:2px}
+.install-step-text{font-size:13px;color:var(--text);line-height:1.5}
+
 @media(max-width:520px){
   .ans-play-grid,.tf-grid,#home .modes,.add-q-types,.add-q-types-pro,.ans-grid-editor{grid-template-columns:1fr}
   .tf-grid{gap:14px}.final-stats{flex-direction:column}.info-slide-content{padding:24px 20px}
@@ -474,6 +493,27 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 <!-- Home topbar with account pill -->
 <div class="home-topbar" id="homeTopbar">
   <canvas id="confettiCanvas"></canvas>
+
+<!-- REUSABLE CONFIRM DIALOG -->
+<div class="kwiz-dialog-bg" id="kwizDialogBg">
+  <div class="kwiz-dialog" id="kwizDialog">
+    <div class="dlg-icon" id="dlgIcon">⚠️</div>
+    <div class="dlg-title" id="dlgTitle">Bist du sicher?</div>
+    <div class="dlg-body" id="dlgBody"></div>
+    <div class="dlg-actions" id="dlgActions"></div>
+  </div>
+</div>
+
+<!-- INSTALL OVERLAY -->
+<div class="kwiz-dialog-bg" id="installDialogBg">
+  <div class="kwiz-dialog">
+    <div class="dlg-icon" id="installIcon">📲</div>
+    <div class="dlg-title" id="installTitle">App installieren</div>
+    <div class="install-steps" id="installSteps"></div>
+    <button class="btn btn-green" onclick="document.getElementById('installDialogBg').classList.remove('show')">✓ Verstanden</button>
+  </div>
+</div>
+
 <div class="acc-pill" id="accPill" onclick="toggleProfileMenu()">
     <div class="acc-avatar" id="accAvatar">?</div>
     <span class="acc-name" id="accName">Account</span>
@@ -923,10 +963,12 @@ function updateProUI(){
 
 function handleHomeProBtn(){
   if(isPro){
-    if(confirm('⚡ KWIZ! Pro ist aktiv!\n\nPro-Features deaktivieren?')){
-      isPro=false;localStorage.removeItem(PRO_KEY);
-      updateProUI();toast('Pro deaktiviert','var(--muted)');
-    }
+    kwizConfirm({
+      icon:'⚡',title:'KWIZ! Pro ist aktiv',
+      body:'Möchtest du die Pro-Features deaktivieren?',
+      confirmLabel:'Deaktivieren',confirmClass:'btn-ghost',cancelLabel:'Behalten',
+      onConfirm:()=>{isPro=false;localStorage.removeItem(PRO_KEY);updateProUI();toast('Pro deaktiviert','var(--muted)');}
+    });
   } else {
     openProModal();
   }
@@ -1203,7 +1245,20 @@ async function publishFromLib(qid){
   if(!currentUser||currentUser.isAnonymous){toast('Bitte einloggen!','var(--yellow)');return;}
   const qz=await dbGet('users/'+currentUser.uid+'/quizzes/'+qid);
   if(!qz) return;
-  if(!confirm('Quiz "'+qz.title+'" öffentlich veröffentlichen?')) return;
+  const _qz=qz;
+  kwizConfirm({
+    icon:'🌐',title:'Quiz veröffentlichen?',
+    body:'"'+(_qz.title||'Ohne Titel')+'" wird für alle Nutzer sichtbar.',
+    confirmLabel:'🌐 Veröffentlichen',confirmClass:'btn-green',
+    onConfirm:async()=>{
+      const stripped=(_qz.questions||[]).map(q=>{const r={...q};delete r.image;return r;});
+      const pid='pub_'+currentUser.uid.slice(0,8)+'_'+Date.now();
+      const pub={id:pid,title:_qz.title,emoji:_qz.emoji||'🎯',questions:stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
+      try{await dbSet('public_quizzes/'+pid,pub);toast('🌐 Veröffentlicht!','var(--green)');}
+      catch(e){toast('Fehler: '+e.message,'var(--red)');}
+    }
+  });
+  return; // async handled in callback
   const stripped=(qz.questions||[]).map(q=>{const r={...q};delete r.image;return r;});
   const pid='pub_'+currentUser.uid.slice(0,8)+'_'+Date.now();
   const pub={id:pid,title:qz.title,emoji:qz.emoji||'🎯',questions:stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
@@ -1211,7 +1266,19 @@ async function publishFromLib(qid){
   catch(e){toast('Fehler: '+e.message,'var(--red)');}
 }
 async function deleteQuiz(qid){
-  if(!confirm('Quiz wirklich löschen?')) return;
+  const _qidDel=qid;
+  kwizConfirm({
+    icon:'🗑',title:'Quiz löschen?',
+    body:'Das Quiz wird dauerhaft gelöscht und kann nicht wiederhergestellt werden.',
+    confirmLabel:'🗑 Löschen',confirmClass:'btn-red',
+    onConfirm:async()=>{
+      try{
+        await dbSet('users/'+currentUser.uid+'/quizzes/'+_qidDel,null);
+        toast('Quiz gelöscht','var(--orange)');loadMyQuizzes();updateMyQuizzesDesc();
+      }catch(e){toast('Fehler: '+e.message,'var(--red)');}
+    }
+  });
+  return; // async handled in callback
   try{
     const {ref,set}=window._fb;
     await set(ref(fbDb,`users/${currentUser.uid}/quizzes/${qid}`),null);
@@ -2222,6 +2289,7 @@ function renderPublicLib(quizzes){
       '<div style="display:flex;gap:8px;margin-top:12px">'+
       '<button class="btn btn-green btn-xs" style="flex:1" onclick="pubCardAction(this,1)">▶ Hosten</button>'+
       '<button class="btn btn-ghost btn-xs" style="flex:1" onclick="pubCardAction(this,0)">📥 Importieren</button>'+
+      (currentUser&&qz.authorId===currentUser.uid?'<button class="btn btn-xs" style="background:rgba(255,59,92,.12);border-color:rgba(255,59,92,.3);color:var(--red)" onclick="pubCardAction(this,2)">🗑 Löschen</button>':'')+
       '</div></div>';
   }).join('');
 }
@@ -2238,24 +2306,47 @@ async function publishCurrentQuiz(){
   const emoji=document.getElementById('quizEmoji')?.value.trim()||'🎯';
   const valid=editorQs.filter(q=>validateQ(q));
   if(!valid.length){toast('Erst Quiz fertigstellen!','var(--red)');return;}
-  if(!confirm('Quiz "'+title+'" öffentlich veröffentlichen? Alle Nutzer können es dann spielen.')) return;
-  // Strip images from public copy to save space
-  const stripped=valid.map(q=>{const r={...q};delete r.image;return r;});
-  const qid='pub_'+(currentUser.uid.slice(0,8))+'_'+Date.now();
-  const pub={id:qid,title,emoji,questions:stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
-  try{
-    await dbSet('public_quizzes/'+qid,pub);
-    toast('🌐 Quiz veröffentlicht!','var(--green)');
-    loadPublicLib();
-  }catch(e){toast('Fehler: '+e.message,'var(--red)');}
+  const _title=title,_emoji=emoji,_stripped=stripped;
+  kwizConfirm({
+    icon:'🌐',title:'Quiz veröffentlichen?',
+    body:'"'+_title+'" wird in der öffentlichen Bibliothek sichtbar. Bilder werden nicht mitgeteilt.',
+    confirmLabel:'🌐 Veröffentlichen',confirmClass:'btn-green',
+    onConfirm:async()=>{
+      const qid2='pub_'+(currentUser.uid.slice(0,8))+'_'+Date.now();
+      const pub2={id:qid2,title:_title,emoji:_emoji,questions:_stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
+      try{
+        await dbSet('public_quizzes/'+qid2,pub2);
+        toast('🌐 Quiz veröffentlicht!','var(--green)');
+        if(activeScreen()==='publicLib') loadPublicLib();
+      }catch(e){toast('Fehler: '+e.message,'var(--red)');}
+    }
+  });
 }
 
-function pubCardAction(btn,isPlay){
+
+function pubCardAction(btn,action){
   const card=btn.closest('.pub-card');
   if(!card) return;
   const safeId=card.getAttribute('data-pubid');
-  if(isPlay) playPublicQuiz(safeId);
-  else importPublicQuiz(safeId);
+  if(action===1) playPublicQuiz(safeId);
+  else if(action===0) importPublicQuiz(safeId);
+  else if(action===2) unpublishQuiz(safeId,card);
+}
+async function unpublishQuiz(safeId,card){
+  kwizConfirm({
+    icon:'🗑',title:'Veröffentlichung aufheben?',
+    body:'Das Quiz wird aus der öffentlichen Bibliothek entfernt. Deine gespeicherte Kopie bleibt erhalten.',
+    confirmLabel:'🗑 Entfernen',confirmClass:'btn-red',
+    onConfirm:async()=>{
+      const qid=decodeURIComponent(safeId);
+      try{
+        await dbSet('public_quizzes/'+qid,null);
+        card.style.animation='fadeOut .3s forwards';
+        setTimeout(()=>{card.remove();if(!document.querySelector('.pub-card'))loadPublicLib();},300);
+        toast('Veröffentlichung aufgehoben','var(--orange)');
+      }catch(e){toast('Fehler: '+e.message,'var(--red)');}
+    }
+  });
 }
 async function playPublicQuiz(safeId){
   const qid=decodeURIComponent(safeId);
@@ -2338,6 +2429,52 @@ async function exportResults(){
   toast('📄 Ergebnisse exportiert!','var(--green)');
 }
 
+
+
+// ─── DIALOG SYSTEM ───────────────────────────
+function kwizConfirm({icon='⚠️',title,body,confirmLabel='Bestätigen',confirmClass='btn-red',cancelLabel='Abbrechen',onConfirm,onCancel}){
+  document.getElementById('dlgIcon').textContent=icon;
+  document.getElementById('dlgTitle').textContent=title;
+  document.getElementById('dlgBody').textContent=body;
+  const actions=document.getElementById('dlgActions');
+  actions.className='dlg-actions row';
+  actions.innerHTML='';
+  const cancelBtn=document.createElement('button');
+  cancelBtn.className='btn btn-ghost';cancelBtn.style.flex='1';
+  cancelBtn.textContent=cancelLabel;
+  cancelBtn.onclick=()=>{closeKwizDialog();if(onCancel)onCancel();};
+  const confirmBtn=document.createElement('button');
+  confirmBtn.className='btn '+confirmClass;confirmBtn.style.flex='1';
+  confirmBtn.textContent=confirmLabel;
+  confirmBtn.onclick=()=>{closeKwizDialog();onConfirm();};
+  actions.appendChild(cancelBtn);
+  actions.appendChild(confirmBtn);
+  document.getElementById('kwizDialogBg').classList.add('show');
+}
+
+function kwizAlert({icon='ℹ️',title,body,btnLabel='OK',btnClass='btn-blue',onClose}){
+  document.getElementById('dlgIcon').textContent=icon;
+  document.getElementById('dlgTitle').textContent=title;
+  document.getElementById('dlgBody').innerHTML=body||'';
+  const actions=document.getElementById('dlgActions');
+  actions.className='dlg-actions';
+  actions.innerHTML='';
+  const btn=document.createElement('button');
+  btn.className='btn '+btnClass;btn.textContent=btnLabel;
+  btn.onclick=()=>{closeKwizDialog();if(onClose)onClose();};
+  actions.appendChild(btn);
+  document.getElementById('kwizDialogBg').classList.add('show');
+}
+
+function closeKwizDialog(){
+  document.getElementById('kwizDialogBg').classList.remove('show');
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const bg=document.getElementById('kwizDialogBg');
+  if(bg) bg.addEventListener('click',e=>{if(e.target===bg)closeKwizDialog();});
+  const ibg=document.getElementById('installDialogBg');
+  if(ibg) ibg.addEventListener('click',e=>{if(e.target===ibg)ibg.classList.remove('show');});
+});
 
 renderEditor();
 updateProUI();
@@ -2424,9 +2561,20 @@ self.addEventListener('fetch',e=>{
       const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
       const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
       if(isIOS||isSafari){
-        alert('📲 iOS Installation:\n\n1. Tippe auf das Teilen-Symbol (↑)\n2. Wähle „Zum Home-Bildschirm"\n3. Tippe „Hinzufügen"');
+        document.getElementById('installIcon').textContent='📱';
+        document.getElementById('installTitle').textContent='iOS Installation';
+        document.getElementById('installSteps').innerHTML=
+          '<div class="install-step"><div class="install-step-num">1</div><div class="install-step-text">Tippe auf das <strong>Teilen-Symbol</strong> (↑) unten in Safari</div></div>'+
+          '<div class="install-step"><div class="install-step-num">2</div><div class="install-step-text">Scrolle und wähle <strong>„Zum Home-Bildschirm"</strong></div></div>'+
+          '<div class="install-step"><div class="install-step-num">3</div><div class="install-step-text">Tippe oben rechts auf <strong>„Hinzufügen"</strong></div></div>';
+        document.getElementById('installDialogBg').classList.add('show');
       } else {
-        alert('📲 Installation:\n\nÖffne das Browser-Menü (⋮) und wähle „App installieren" oder „Zum Startbildschirm hinzufügen".');
+        document.getElementById('installIcon').textContent='🤖';
+        document.getElementById('installTitle').textContent='App installieren';
+        document.getElementById('installSteps').innerHTML=
+          '<div class="install-step"><div class="install-step-num">1</div><div class="install-step-text">Öffne das <strong>Browser-Menü</strong> (⋮ oben rechts)</div></div>'+
+          '<div class="install-step"><div class="install-step-num">2</div><div class="install-step-text">Wähle <strong>„App installieren"</strong> oder<br>„Zum Startbildschirm hinzufügen"</div></div>';
+        document.getElementById('installDialogBg').classList.add('show');
       }
     }
   };
