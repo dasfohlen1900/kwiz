@@ -523,6 +523,9 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
   <button class="pm-item" onclick="pmManagePro()">
     <span class="pm-icon" id="pmProIcon">⚡</span><span class="pm-label" id="pmProLabel">Pro freischalten</span><span class="pm-arrow">›</span>
   </button>
+  <button class="pm-item" onclick="pmGoInfo()">
+    <span class="pm-icon">ℹ️</span><span class="pm-label">Info & Hilfe</span><span class="pm-arrow">›</span>
+  </button>
   <div class="pm-divider"></div>
   <button class="pm-item danger" onclick="pmLogout()">
     <span class="pm-icon">👋</span><span class="pm-label">Abmelden</span>
@@ -1032,6 +1035,7 @@ function closeProfileMenu(){
 }
 function pmGoMyQuizzes(){closeProfileMenu();showScreen('myQuizzes');loadMyQuizzes();}
 function pmManagePro(){closeProfileMenu();if(isPro){handleHomeProBtn();}else{openProModal();}}
+function pmGoInfo(){closeProfileMenu();window.location.href='info.html';}
 function pmLogout(){closeProfileMenu();doLogout();}
 async function updateMyQuizzesDesc(){
   if(!currentUser||currentUser.isAnonymous) return;
