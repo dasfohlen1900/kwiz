@@ -327,6 +327,56 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .gap12{display:flex;flex-direction:column;gap:12px;width:100%;max-width:480px}
 .muted{color:var(--muted);font-size:13px}
 .mt8{margin-top:8px}.mt16{margin-top:16px}.mt24{margin-top:24px}
+
+/* ── CONFETTI ── */
+#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:999;display:none}
+
+/* ── IMAGE IN QUESTIONS ── */
+.q-image-wrap{width:100%;max-width:500px;margin:0 auto 16px;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid var(--border)}
+.q-image-wrap img{width:100%;height:auto;display:block;max-height:260px;object-fit:contain}
+.img-upload-area{border:2px dashed rgba(255,255,255,.2);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-top:10px}
+.img-upload-area:hover{border-color:rgba(30,144,255,.5);background:rgba(30,144,255,.05)}
+.img-upload-area input{display:none}
+.img-preview{position:relative;margin-top:10px;border-radius:10px;overflow:hidden}
+.img-preview img{width:100%;max-height:180px;object-fit:contain;display:block;background:rgba(255,255,255,.04)}
+.img-remove{position:absolute;top:6px;right:6px;background:rgba(255,59,92,.85);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:800;padding:4px 10px;cursor:pointer}
+.img-compress-info{font-size:11px;color:var(--muted);margin-top:6px;text-align:center}
+
+/* ── AI GENERATOR ── */
+.ai-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
+.ai-modal-bg.show{display:flex}
+.ai-modal{background:linear-gradient(160deg,#0a0a1e,#121228);border:1px solid rgba(176,109,255,.3);border-radius:28px;padding:32px 28px;max-width:500px;width:100%;box-shadow:0 30px 80px rgba(176,109,255,.2)}
+.ai-modal h2{font-family:'Righteous',cursive;font-size:26px;margin-bottom:6px;background:linear-gradient(135deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ai-result-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:background .15s,border-color .15s}
+.ai-result-item:hover{background:rgba(176,109,255,.1);border-color:rgba(176,109,255,.4)}
+.ai-result-item.selected{background:rgba(176,109,255,.12);border-color:var(--purple)}
+.ai-q-text{font-weight:700;font-size:14px;margin-bottom:6px}
+.ai-q-meta{font-size:12px;color:var(--muted)}
+.ai-loading{text-align:center;padding:32px 0}
+.ai-loading p{color:var(--muted);font-size:14px;margin-top:12px}
+
+/* ── PUBLIC LIBRARY ── */
+#publicLib{justify-content:flex-start;padding-top:80px}
+.pub-lib-header{position:fixed;top:0;left:0;right:0;background:rgba(8,8,23,.95);backdrop-filter:blur(16px);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);z-index:100}
+.pub-lib-header h2{font-family:'Righteous',cursive;font-size:20px;flex:1}
+.pub-search{display:flex;gap:10px;width:100%;max-width:640px;margin-bottom:16px}
+.pub-search .input{flex:1}
+.pub-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:18px;padding:18px 20px;margin-bottom:12px;width:100%;max-width:640px;cursor:pointer;transition:background .15s,transform .12s}
+.pub-card:hover{background:rgba(255,255,255,.07);transform:translateY(-2px)}
+.pub-card-top{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.pub-card-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(176,109,255,.3),rgba(30,144,255,.2));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.pub-card-info{flex:1;min-width:0}
+.pub-card-title{font-weight:800;font-size:16px}
+.pub-card-author{font-size:12px;color:var(--muted);margin-top:3px}
+.pub-card-stats{display:flex;gap:12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.pub-stat{display:flex;align-items:center;gap:4px}
+.pub-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.pub-tag{background:rgba(255,255,255,.07);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--muted)}
+
+/* ── EXPORT BUTTON ── */
+.export-btn{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;padding:10px 18px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s}
+.export-btn:hover{background:rgba(255,255,255,.1)}
+
 @media(max-width:520px){
   .ans-play-grid,.tf-grid,#home .modes,.add-q-types,.add-q-types-pro,.ans-grid-editor{grid-template-columns:1fr}
   .tf-grid{gap:14px}.final-stats{flex-direction:column}.info-slide-content{padding:24px 20px}
@@ -423,7 +473,8 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 
 <!-- Home topbar with account pill -->
 <div class="home-topbar" id="homeTopbar">
-  <div class="acc-pill" id="accPill" onclick="toggleProfileMenu()">
+  <canvas id="confettiCanvas"></canvas>
+<div class="acc-pill" id="accPill" onclick="toggleProfileMenu()">
     <div class="acc-avatar" id="accAvatar">?</div>
     <span class="acc-name" id="accName">Account</span>
   </div>
@@ -450,13 +501,6 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
   <button class="pm-item danger" onclick="pmLogout()">
     <span class="pm-icon">👋</span><span class="pm-label">Abmelden</span>
   </button>
-  <a href="info.html" style="text-decoration: none;">
-    <button class="pm-item">
-        <span class="pm-icon">ℹ️</span>
-        <span class="pm-label">Informationen</span>
-        <span class="pm-arrow">›</span>
-    </button>
-</a>
 </div>
 <div class="conn-pill" id="connPill">
   <div class="conn-dot live"></div>
@@ -512,6 +556,9 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
     <div class="mode-card" onclick="showScreen('soloScreen');loadSoloQuizzes()">
       <div class="icon">🧠</div><div class="title">Solo spielen</div><div class="desc">Eigenes Quiz alleine testen</div>
     </div>
+    <div class="mode-card" onclick="showScreen('publicLib');loadPublicLib()" style="grid-column:1/-1">
+      <div class="icon">🌐</div><div class="title">Öffentliche Bibliothek</div><div class="desc">Quiz-Sammlung der Community spielen oder teilen</div>
+    </div>
   </div>
   <button class="btn btn-pro" style="max-width:480px;margin-top:4px" id="homeProBtn" onclick="handleHomeProBtn()">⚡ KWIZ! Pro – Neue Fragetypen freischalten</button>
   <button class="btn btn-ghost" id="pwaInstallBtn" style="max-width:480px;margin-top:4px;display:none" onclick="installPWA()">📲 App installieren</button>
@@ -546,12 +593,79 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
   </div>
 </div>
 
+
+<!-- AI GENERATOR MODAL -->
+<div class="ai-modal-bg" id="aiModalBg">
+  <div class="ai-modal">
+    <h2>🤖 KI-Fragengenerator</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Thema eingeben → KI generiert passende Fragen</p>
+    <div id="aiStep1">
+      <div class="lbl">Thema / Beschreibung</div>
+      <input class="input" id="aiTopic" placeholder="z.B. Deutsche Geschichte, Fußball WM, Physik..." style="margin-bottom:10px">
+      <div style="display:flex;gap:10px;margin-bottom:16px">
+        <div style="flex:1"><div class="lbl">Anzahl Fragen</div>
+          <select class="input" id="aiCount" style="cursor:pointer">
+            <option value="3">3 Fragen</option>
+            <option value="5" selected>5 Fragen</option>
+            <option value="8">8 Fragen</option>
+            <option value="10">10 Fragen</option>
+          </select>
+        </div>
+        <div style="flex:1"><div class="lbl">Fragetypen</div>
+          <select class="input" id="aiTypes" style="cursor:pointer">
+            <option value="mix">Mix</option>
+            <option value="mc">Multiple Choice</option>
+            <option value="tf">Wahr / Falsch</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-purple" onclick="runAiGenerate()">🤖 Fragen generieren</button>
+      <button class="btn btn-ghost" style="margin-top:8px" onclick="closeAiModal()">Abbrechen</button>
+    </div>
+    <div id="aiStep2" style="display:none">
+      <div class="ai-loading" id="aiLoading">
+        <div class="spinner" style="margin:auto;width:36px;height:36px;border-width:4px"></div>
+        <p style="margin-top:14px">KI denkt nach…</p>
+      </div>
+      <div id="aiResults" style="display:none">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Wähle Fragen aus, die du übernehmen möchtest:</p>
+        <div id="aiResultList" style="max-height:340px;overflow-y:auto;margin-bottom:14px"></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-green" onclick="addAiQuestions()" style="flex:1">✅ Ausgewählte hinzufügen</button>
+          <button class="btn btn-ghost" onclick="closeAiModal()" style="flex:1">Abbrechen</button>
+        </div>
+      </div>
+      <div id="aiError" style="display:none;color:var(--red);font-size:14px;text-align:center;padding:20px">
+        <p style="font-size:32px;margin-bottom:8px">❌</p>
+        <p id="aiErrMsg"></p>
+        <button class="btn btn-ghost" style="margin-top:12px;width:auto;padding:10px 24px" onclick="showAiStep(1)">← Zurück</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PUBLIC LIBRARY -->
+<div id="publicLib" class="screen" style="justify-content:flex-start;padding:80px 20px 40px">
+  <div class="pub-lib-header">
+    <button class="btn btn-ghost btn-sm" style="width:auto" onclick="showScreen('home')">← Zurück</button>
+    <h2>🌐 Öffentliche Bibliothek</h2>
+    <button class="btn btn-green btn-xs" onclick="publishCurrentQuiz()" id="publishBtn">📤 Veröffentlichen</button>
+  </div>
+  <div style="width:100%;max-width:640px;padding-top:8px">
+    <div class="pub-search">
+      <input class="input" id="pubSearchInput" placeholder="Quizze suchen…" oninput="filterPublicLib(this.value)">
+    </div>
+    <div id="pubLibList"><p class="muted" style="text-align:center;margin-top:24px">Lade…</p></div>
+  </div>
+</div>
+
 <!-- EDITOR -->
 <div id="createQuiz" class="screen" style="justify-content:flex-start;padding:80px 20px 100px">
   <div class="editor-header">
     <button class="btn btn-ghost btn-sm" style="width:auto" onclick="showScreen('home')">← Zurück</button>
     <h2>Quiz erstellen</h2>
     <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn btn-ghost btn-sm" style="width:auto" onclick="openAiModal()">🤖 KI</button>
       <button class="btn btn-ghost btn-sm" style="width:auto" onclick="saveQuizToAccount()" id="saveBtn">💾 Speichern</button>
       <button class="btn btn-red btn-sm" style="width:auto" onclick="startHosting()">🚀 Hosten</button>
       <div class="acc-pill" id="accPillEditor" style="display:none" onclick="toggleProfileMenu()">
@@ -754,6 +868,7 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
   <div id="finalLb" style="width:100%;max-width:480px;margin-bottom:24px"></div>
   <div class="gap12">
     <button class="btn btn-red" onclick="restartGame()">🔄 Nochmal</button>
+    <button class="btn btn-ghost btn-sm" style="background:rgba(0,214,143,.1);border-color:rgba(0,214,143,.3);color:var(--green)" onclick="exportResults()">📄 Ergebnisse exportieren</button>
     <button class="btn btn-ghost" onclick="fullReset()">🏠 Hauptmenü</button>
   </div>
 </div>
@@ -1061,6 +1176,7 @@ async function loadMyQuizzes(){
         <div class="quiz-lib-actions" onclick="event.stopPropagation()">
           <button class="btn btn-green btn-xs" onclick="loadAndHost('${qz.id}')">▶</button>
           <button class="btn btn-ghost btn-xs" onclick="loadQuizForEdit('${qz.id}')">✏️</button>
+          <button class="btn btn-ghost btn-xs" onclick="publishFromLib('${qz.id}')" title="Veröffentlichen">🌐</button>
           <button class="btn btn-red btn-xs" onclick="deleteQuiz('${qz.id}')">🗑</button>
         </div>
       </div>`;
@@ -1083,6 +1199,17 @@ async function loadQuizForEdit(qid){
   }catch(e){toast('Fehler: '+e.message,'var(--red)');}
 }
 async function loadAndHost(qid){await loadQuizForEdit(qid);setTimeout(startHosting,200);}
+async function publishFromLib(qid){
+  if(!currentUser||currentUser.isAnonymous){toast('Bitte einloggen!','var(--yellow)');return;}
+  const qz=await dbGet('users/'+currentUser.uid+'/quizzes/'+qid);
+  if(!qz) return;
+  if(!confirm('Quiz "'+qz.title+'" öffentlich veröffentlichen?')) return;
+  const stripped=(qz.questions||[]).map(q=>{const r={...q};delete r.image;return r;});
+  const pid='pub_'+currentUser.uid.slice(0,8)+'_'+Date.now();
+  const pub={id:pid,title:qz.title,emoji:qz.emoji||'🎯',questions:stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
+  try{await dbSet('public_quizzes/'+pid,pub);toast('🌐 Veröffentlicht!','var(--green)');}
+  catch(e){toast('Fehler: '+e.message,'var(--red)');}
+}
 async function deleteQuiz(qid){
   if(!confirm('Quiz wirklich löschen?')) return;
   try{
@@ -1160,7 +1287,8 @@ function renderEditor(){
         <input class="input" style="flex:1;padding:10px 12px;font-size:14px" placeholder="Antwort ${j+1}..." value="${esc(a)}" oninput="editorQs[${i}].answers[${j}]=this.value">
       </div>`).join('')}</div>
       <p style="font-size:11px;color:var(--muted);margin-top:10px">Symbol anklicken = richtige Antwort (aktuell: <strong>${SHAPES[q.correct]}</strong>)</p>
-      <div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>`;
+      <div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>
+      \${renderImgEditor(q,${i})}`;
     } else if(type==='mc_multi'){
       // toggle correct answers
       const toggleCorrect=(i,j)=>{
@@ -1184,7 +1312,8 @@ function renderEditor(){
       <div style="display:flex;gap:10px;margin-top:12px">
         <button onclick="setCorrect(${i},1)" style="flex:1;padding:10px;border-radius:10px;border:2px solid ${q.correct===1?'#00d68f':'rgba(255,255,255,.15)'};background:${q.correct===1?'rgba(0,214,143,.15)':'rgba(255,255,255,.04)'};color:${q.correct===1?'#00d68f':'var(--text)'};font-family:Nunito,sans-serif;font-weight:800;font-size:14px;cursor:pointer">✅ WAHR</button>
         <button onclick="setCorrect(${i},0)" style="flex:1;padding:10px;border-radius:10px;border:2px solid ${q.correct===0?'#ff3b5c':'rgba(255,255,255,.15)'};background:${q.correct===0?'rgba(255,59,92,.15)':'rgba(255,255,255,.04)'};color:${q.correct===0?'#ff3b5c':'var(--text)'};font-family:Nunito,sans-serif;font-weight:800;font-size:14px;cursor:pointer">❌ FALSCH</button>
-      </div><div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>`;
+      </div><div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>
+      \${renderImgEditor(q,${i})}`;
     } else if(type==='info'){
       c=`<div class="lbl">Emoji</div><input class="input" value="${esc(q.icon||'💡')}" maxlength="4" style="font-size:22px;width:80px" oninput="editorQs[${i}].icon=this.value">
       <div class="lbl mt8">Titel</div><input class="input" placeholder="Folientitel..." value="${esc(q.title)}" oninput="editorQs[${i}].title=this.value">
@@ -1429,6 +1558,8 @@ async function showQuestion(qIdx,mode){
     let meta=isTF?'WAHR/FALSCH':isEstimate?'SCHÄTZFRAGE':isInput?'FREITEXTEINGABE':isSlider?'SCHIEBEREGLER':'FRAGE';
     document.getElementById('hqMeta').textContent=`${meta} ${qIdx+1} VON ${total}`;
     document.getElementById('hqText').textContent=q.q;
+    const existingHImg=document.getElementById('hqImageWrap');if(existingHImg)existingHImg.remove();
+    if(q.image){const w=document.createElement('div');w.id='hqImageWrap';w.className='q-image-wrap';w.style.marginBottom='16px';w.innerHTML='<img src="'+q.image+'" alt="Fragebild">';const b=document.querySelector('#hostQuestion .q-bubble');if(b)b.after(w);}
     let ansHtml='';
     if(isTF) ansHtml=`<div class="tf-grid"><button class="tf-btn tf-true" disabled><span class="tf-icon">✅</span>WAHR</button><button class="tf-btn tf-false" disabled><span class="tf-icon">❌</span>FALSCH</button></div>`;
     else if(q.type==='mc_multi') ansHtml='<div class="ans-play-grid">'+q.answers.map((a,i)=>'<button class="ans-play-btn" data-c="'+i+'" disabled><span class="shape">'+SHAPES[i]+'</span><span>'+esc(a)+'</span>'+(q.correct&&q.correct.includes(i)?'<span style="margin-left:auto;font-size:18px">☑️</span>':'')+' </button>').join('')+'</div>';
@@ -1447,6 +1578,11 @@ async function showQuestion(qIdx,mode){
     let meta=isTF?'WAHR/FALSCH':isEstimate?'SCHÄTZFRAGE':isInput?'FREITEXTEINGABE':isSlider?'SCHIEBEREGLER':'FRAGE';
     document.getElementById('pqMeta').textContent=`${meta} ${qIdx+1} VON ${total}`;
     document.getElementById('pqText').textContent=q.q;
+    // Show image if present
+    let imgHtml='';
+    if(q.image){imgHtml='<div class="q-image-wrap" style="margin-bottom:16px"><img src="'+q.image+'" alt="Fragebild"></div>';}
+    const existingImg=document.getElementById('pqImageWrap');if(existingImg)existingImg.remove();
+    if(q.image){const wrap=document.createElement('div');wrap.id='pqImageWrap';wrap.innerHTML=imgHtml;const bubble=document.querySelector('#playerQuestion .q-bubble');if(bubble)bubble.after(wrap);}
     document.getElementById('pqScore').textContent='⭐ '+S.score.toLocaleString();
     let ansHtml='';
     if(isTF){
@@ -1748,6 +1884,7 @@ function showPlayerReveal(room){
   }
   document.getElementById('pqScore').textContent='⭐ '+S.score.toLocaleString();
   showScreen('playerReveal');
+  if(ok) setTimeout(()=>launchConfetti(1800),200);
 }
 
 // ─── LEADERBOARD ────────────────────────────
@@ -1805,6 +1942,7 @@ function showEnd(room){
       <div class="lb-score-val">${(p.score||0).toLocaleString()}</div>
     </div>`).join('');
   showScreen('endScreen');
+  setTimeout(()=>launchConfetti(4000),300);
 }
 async function restartGame(){
   if(S.role==='host'||S.role==='solo'){
@@ -1827,6 +1965,380 @@ document.addEventListener('click',e=>{
     if(!n.value) n.value=currentUser.displayName||currentUser.email?.split('@')[0]||'';
   }
 });
+
+// ─── CONFETTI ────────────────────────────────
+function launchConfetti(duration=3500){
+  const canvas=document.getElementById('confettiCanvas');
+  if(!canvas) return;
+  canvas.style.display='block';
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d');
+  const pieces=[];
+  const colors=['#ff3b5c','#ffcc00','#00d68f','#1e90ff','#b06dff','#ff9500','#fff'];
+  for(let i=0;i<180;i++){
+    pieces.push({
+      x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height,
+      w:Math.random()*10+6, h:Math.random()*16+8,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      rot:Math.random()*360, rotSpeed:(Math.random()-.5)*8,
+      vx:(Math.random()-.5)*4, vy:Math.random()*4+2,
+      opacity:1
+    });
+  }
+  const start=Date.now();
+  function frame(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const elapsed=Date.now()-start;
+    const remaining=Math.max(0,(duration-elapsed)/duration);
+    pieces.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.rotSpeed; p.vy+=0.08;
+      p.opacity=remaining>0.3?1:remaining/0.3;
+      ctx.save();ctx.globalAlpha=p.opacity;
+      ctx.translate(p.x+p.w/2,p.y+p.h/2);ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    if(elapsed<duration+500) requestAnimationFrame(frame);
+    else{ctx.clearRect(0,0,canvas.width,canvas.height);canvas.style.display='none';}
+  }
+  requestAnimationFrame(frame);
+}
+
+// ─── AI GENERATOR ────────────────────────────
+let aiGeneratedQs=[];
+
+function openAiModal(){document.getElementById('aiModalBg').classList.add('show');showAiStep(1);}
+function closeAiModal(){document.getElementById('aiModalBg').classList.remove('show');}
+function showAiStep(n){
+  document.getElementById('aiStep1').style.display=n===1?'':'none';
+  document.getElementById('aiStep2').style.display=n===2?'':'none';
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const bg=document.getElementById('aiModalBg');
+  if(bg) bg.addEventListener('click',e=>{if(e.target===bg)closeAiModal();});
+});
+
+async function runAiGenerate(){
+  const topic=document.getElementById('aiTopic').value.trim();
+  if(!topic){toast('Bitte Thema eingeben!','var(--red)');return;}
+  const count=document.getElementById('aiCount').value;
+  const types=document.getElementById('aiTypes').value;
+  showAiStep(2);
+  document.getElementById('aiLoading').style.display='';
+  document.getElementById('aiResults').style.display='none';
+  document.getElementById('aiError').style.display='none';
+
+  const typeInstr=types==='mc'?'Nur Multiple-Choice-Fragen (type:"mc").':
+    types==='tf'?'Nur Wahr/Falsch-Fragen (type:"tf").':
+    'Mix aus Multiple Choice (type:"mc") und Wahr/Falsch (type:"tf").';
+
+  const prompt=`Erstelle ${count} Quiz-Fragen auf Deutsch zum Thema: "${topic}".
+${typeInstr}
+Antworte NUR mit einem JSON-Array, kein anderer Text, kein Markdown.
+Format für mc: {"type":"mc","q":"Frage?","answers":["A","B","C","D"],"correct":0,"time":20}
+  (correct = Index der richtigen Antwort, 0-3)
+Format für tf: {"type":"tf","q":"Aussage...","correct":1,"time":15}
+  (correct: 1=wahr, 0=falsch)
+Gib nur das Array zurück, keine Erklärungen.`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:2000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await resp.json();
+    if(!resp.ok) throw new Error(data.error?.message||'API Fehler');
+    const raw=data.content?.map(b=>b.text||'').join('').trim();
+    const match=raw.match(/\[.*\]/s);
+    if(!match) throw new Error('Kein gültiges JSON in der Antwort');
+    const qs=JSON.parse(match[0]);
+    if(!Array.isArray(qs)||!qs.length) throw new Error('Leeres Array erhalten');
+    aiGeneratedQs=qs;
+    renderAiResults(qs);
+    document.getElementById('aiLoading').style.display='none';
+    document.getElementById('aiResults').style.display='';
+  }catch(e){
+    document.getElementById('aiLoading').style.display='none';
+    document.getElementById('aiError').style.display='';
+    document.getElementById('aiErrMsg').textContent='Fehler: '+e.message;
+  }
+}
+
+function renderAiResults(qs){
+  const list=document.getElementById('aiResultList');
+  list.innerHTML=qs.map((q,i)=>{
+    const typeLabel=q.type==='tf'?'Wahr/Falsch':'Multiple Choice';
+    const answers=q.type==='mc'?q.answers.map((a,j)=>'<span style="display:inline-block;background:'+['rgba(230,33,58,.2)','rgba(19,104,206,.2)','rgba(26,138,74,.2)','rgba(217,119,6,.2)'][j]+';border-radius:6px;padding:2px 8px;font-size:11px;margin:2px">'+esc(a)+(j===q.correct?' ✓':'')+'</span>').join('')
+      :'<span style="font-size:12px;color:var(--muted)">'+(q.correct===1?'✅ Wahr':'❌ Falsch')+'</span>';
+    return '<div class="ai-result-item selected" id="aiItem'+i+'" onclick="toggleAiItem('+i+')">'+
+      '<div class="ai-q-text">'+esc(q.q)+'</div>'+
+      '<div class="ai-q-meta" style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
+      '<span style="background:rgba(176,109,255,.2);color:var(--purple);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800">'+typeLabel+'</span>'+
+      '<span>⏱ '+q.time+'s</span></div>'+
+      '<div>'+answers+'</div></div>';
+  }).join('');
+}
+
+function toggleAiItem(i){
+  const el=document.getElementById('aiItem'+i);
+  el.classList.toggle('selected');
+}
+
+function addAiQuestions(){
+  const selected=aiGeneratedQs.filter((_,i)=>{
+    const el=document.getElementById('aiItem'+i);
+    return el&&el.classList.contains('selected');
+  });
+  if(!selected.length){toast('Keine Fragen ausgewählt!','var(--yellow)');return;}
+  selected.forEach(q=>editorQs.push({...q}));
+  renderEditor();
+  closeAiModal();
+  toast('✅ '+selected.length+' Frage'+(selected.length===1?'':'n')+' hinzugefügt!','var(--green)');
+  setTimeout(()=>document.querySelectorAll('.q-card')[editorQs.length-1]?.scrollIntoView({behavior:'smooth',block:'center'}),80);
+}
+
+// ─── IMAGE UPLOAD ─────────────────────────────
+function compressImage(file,maxPx=1024,maxKb=900){
+  return new Promise((resolve,reject)=>{
+    if(file.size>10*1024*1024){reject(new Error('Datei zu groß (max 10MB)'));return;}
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const canvas=document.createElement('canvas');
+        let w=img.width,h=img.height;
+        if(w>maxPx||h>maxPx){
+          if(w>h){h=Math.round(h*maxPx/w);w=maxPx;}
+          else{w=Math.round(w*maxPx/h);h=maxPx;}
+        }
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        let q=0.85;
+        const tryEncode=()=>{
+          const data=canvas.toDataURL('image/jpeg',q);
+          const kb=Math.round(data.length*3/4/1024);
+          if(kb>maxKb&&q>0.3){q-=0.1;tryEncode();return;}
+          resolve({data,kb,w,h});
+        };
+        tryEncode();
+      };
+      img.onerror=()=>reject(new Error('Bild konnte nicht geladen werden'));
+      img.src=e.target.result;
+    };
+    reader.onerror=()=>reject(new Error('Datei konnte nicht gelesen werden'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function triggerImageUpload(qi){
+  const input=document.getElementById('imgInput_'+qi);
+  if(input) input.click();
+}
+
+async function handleImageUpload(input,qi){
+  const file=input.files[0];if(!file) return;
+  const info=document.getElementById('imgInfo_'+qi);
+  if(info) info.textContent='Komprimiere…';
+  try{
+    const result=await compressImage(file);
+    editorQs[qi].image=result.data;
+    if(info) info.textContent=result.w+'×'+result.h+'px · '+result.kb+'KB';
+    renderEditor();
+    // scroll to question
+    setTimeout(()=>document.querySelectorAll('.q-card')[qi]?.scrollIntoView({behavior:'smooth',block:'nearest'}),60);
+  }catch(e){toast('Fehler: '+e.message,'var(--red)');}
+}
+
+function removeImage(qi){
+  delete editorQs[qi].image;
+  renderEditor();
+}
+
+// Helper: render image section in editor question card
+function renderImgEditor(q,i){
+  if(q.image){
+    return '<div class="img-preview" style="margin-top:12px">'+
+      '<img src="'+q.image+'" alt="Fragebild">'+
+      '<button class="img-remove" onclick="removeImage('+i+')">✕ Entfernen</button>'+
+      '</div>'+
+      '<div class="img-compress-info" id="imgInfo_'+i+'">Bild gespeichert</div>';
+  }
+  return '<div class="img-upload-area" onclick="triggerImageUpload('+i+')" style="margin-top:12px">'+
+    '<input type="file" accept="image/*" id="imgInput_'+i+'" onchange="handleImageUpload(this,'+i+')">'+
+    '<div style="font-size:28px;margin-bottom:6px">🖼️</div>'+
+    '<p style="font-size:13px;color:var(--muted);font-weight:700">Bild hinzufügen (optional)</p>'+
+    '<p style="font-size:11px;color:var(--muted);margin-top:4px">Max. 10MB · wird auf 1024px & 900KB komprimiert</p>'+
+    '</div>'+
+    '<div class="img-compress-info" id="imgInfo_'+i+'"></div>';
+}
+
+// ─── PUBLIC LIBRARY ───────────────────────────
+let pubLibCache=[];
+
+async function loadPublicLib(){
+  const list=document.getElementById('pubLibList');
+  list.innerHTML='<div style="text-align:center;padding:40px"><div class="spinner" style="margin:auto"></div></div>';
+  try{
+    const data=await dbGet('public_quizzes');
+    if(!data){
+      list.innerHTML='<div style="text-align:center;padding:40px 20px">'+
+        '<div style="font-size:60px;margin-bottom:12px">📭</div>'+
+        '<p class="muted">Noch keine öffentlichen Quizze. Sei der Erste!</p></div>';
+      pubLibCache=[];return;
+    }
+    pubLibCache=Object.values(data).sort((a,b)=>(b.publishedAt||0)-(a.publishedAt||0));
+    renderPublicLib(pubLibCache);
+  }catch(e){list.innerHTML='<p class="muted" style="text-align:center">Fehler: '+e.message+'</p>';}
+}
+
+function renderPublicLib(quizzes){
+  const list=document.getElementById('pubLibList');
+  if(!quizzes.length){list.innerHTML='<p class="muted" style="text-align:center;margin-top:20px">Keine Ergebnisse gefunden.</p>';return;}
+  const typeIcons={mc:'🔵',tf:'✅',info:'📊',mc_multi:'☑️',estimate:'🎯',input:'⌨️',slider:'🎚️'};
+  list.innerHTML=quizzes.map(qz=>{
+    const qc=(qz.questions||[]).filter(q=>q.type!=='info').length;
+    const types=[...new Set((qz.questions||[]).map(q=>q.type).filter(t=>t!=='info'))];
+    const typeStr=types.map(t=>typeIcons[t]||'').join(' ');
+    const dt=qz.publishedAt?new Date(qz.publishedAt).toLocaleDateString('de-DE'):'';
+    const plays=qz.plays||0;
+    const safeId=encodeURIComponent(qz.id||'');
+    return '<div class="pub-card" data-pubid="'+safeId+'">'+
+      '<div class="pub-card-top">'+
+      '<div class="pub-card-icon">'+(qz.emoji||'🎯')+'</div>'+
+      '<div class="pub-card-info">'+
+      '<div class="pub-card-title">'+esc(qz.title||'Ohne Titel')+'</div>'+
+      '<div class="pub-card-author">von '+esc(qz.authorName||'Unbekannt')+'</div>'+
+      '</div></div>'+
+      '<div class="pub-card-stats">'+
+      '<span class="pub-stat">📝 '+qc+' Fragen</span>'+
+      '<span class="pub-stat">▶ '+plays+' Spiele</span>'+
+      (dt?'<span class="pub-stat">📅 '+dt+'</span>':'')+
+      '</div>'+
+      '<div style="display:flex;gap:8px;margin-top:12px">'+
+      '<button class="btn btn-green btn-xs" style="flex:1" onclick="pubCardAction(this,1)">▶ Hosten</button>'+
+      '<button class="btn btn-ghost btn-xs" style="flex:1" onclick="pubCardAction(this,0)">📥 Importieren</button>'+
+      '</div></div>';
+  }).join('');
+}
+
+function filterPublicLib(query){
+  if(!query.trim()){renderPublicLib(pubLibCache);return;}
+  const q=query.toLowerCase();
+  renderPublicLib(pubLibCache.filter(qz=>(qz.title||'').toLowerCase().includes(q)||(qz.authorName||'').toLowerCase().includes(q)));
+}
+
+async function publishCurrentQuiz(){
+  if(!currentUser||currentUser.isAnonymous){toast('Bitte einloggen!','var(--yellow)');return;}
+  const title=document.getElementById('quizTitle')?.value.trim()||'Ohne Titel';
+  const emoji=document.getElementById('quizEmoji')?.value.trim()||'🎯';
+  const valid=editorQs.filter(q=>validateQ(q));
+  if(!valid.length){toast('Erst Quiz fertigstellen!','var(--red)');return;}
+  if(!confirm('Quiz "'+title+'" öffentlich veröffentlichen? Alle Nutzer können es dann spielen.')) return;
+  // Strip images from public copy to save space
+  const stripped=valid.map(q=>{const r={...q};delete r.image;return r;});
+  const qid='pub_'+(currentUser.uid.slice(0,8))+'_'+Date.now();
+  const pub={id:qid,title,emoji,questions:stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
+  try{
+    await dbSet('public_quizzes/'+qid,pub);
+    toast('🌐 Quiz veröffentlicht!','var(--green)');
+    loadPublicLib();
+  }catch(e){toast('Fehler: '+e.message,'var(--red)');}
+}
+
+function pubCardAction(btn,isPlay){
+  const card=btn.closest('.pub-card');
+  if(!card) return;
+  const safeId=card.getAttribute('data-pubid');
+  if(isPlay) playPublicQuiz(safeId);
+  else importPublicQuiz(safeId);
+}
+async function playPublicQuiz(safeId){
+  const qid=decodeURIComponent(safeId);
+  const qz=await dbGet('public_quizzes/'+qid);
+  if(!qz){toast('Quiz nicht gefunden!','var(--red)');return;}
+  // increment plays
+  try{await dbUpdate('public_quizzes/'+qid,{plays:(qz.plays||0)+1});}catch(e){}
+  // load into editor & host
+  document.getElementById('quizTitle').value=qz.title||'';
+  document.getElementById('quizEmoji').value=qz.emoji||'🎯';
+  editorQs=(qz.questions||[]).map(q=>({...q}));
+  currentEditId=null;
+  renderEditor();
+  startHosting();
+}
+
+async function importPublicQuiz(safeId){
+  if(!currentUser||currentUser.isAnonymous){toast('Bitte einloggen um zu importieren!','var(--yellow)');return;}
+  const qid=decodeURIComponent(safeId);
+  const qz=await dbGet('public_quizzes/'+qid);
+  if(!qz){toast('Quiz nicht gefunden!','var(--red)');return;}
+  document.getElementById('quizTitle').value=(qz.title||'')+(qz.title?' (Import)':'Import');
+  document.getElementById('quizEmoji').value=qz.emoji||'🎯';
+  editorQs=(qz.questions||[]).map(q=>({...q}));
+  currentEditId=null;
+  renderEditor();showScreen('createQuiz');
+  toast('📥 Quiz importiert — jetzt bearbeiten & speichern!','var(--green)');
+}
+
+// ─── EXPORT RESULTS ──────────────────────────
+async function exportResults(){
+  const room=await dbGet(rp());
+  if(!room){toast('Keine Daten!','var(--red)');return;}
+  const players=Object.values(room.players||{}).sort((a,b)=>b.score-a.score);
+  const questions=room.questions||[];
+  const now=new Date().toLocaleString('de-DE');
+
+  let html='<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">'+
+    '<title>'+esc(room.title||'Quiz')+'</title>'+
+    '<style>body{font-family:Arial,sans-serif;background:#f5f5f5;padding:32px;color:#222}'+
+    'h1{color:#1e1e3f;font-size:28px;margin-bottom:4px}'+
+    '.meta{color:#666;font-size:14px;margin-bottom:24px}'+
+    'table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08)}'+
+    'th{background:#1e1e3f;color:#fff;padding:12px 16px;text-align:left;font-size:14px}'+
+    'td{padding:11px 16px;border-bottom:1px solid #eee;font-size:14px}'+
+    'tr:last-child td{border-bottom:none}'+
+    '.medal{font-size:18px}.score{font-weight:800;color:#1e90ff}'+
+    '.section{margin-top:32px}.section h2{color:#1e1e3f;font-size:20px;margin-bottom:12px}'+
+    '</style></head><body>'+
+    '<h1>🏆 '+esc(room.title||'Quiz')+'</h1>'+
+    '<p class="meta">Exportiert: '+now+' · Raum: '+esc(room.code||S.code)+'</p>'+
+    '<div class="section"><h2>📊 Endergebnis</h2>'+
+    '<table><tr><th>Platz</th><th>Spieler</th><th>Punkte</th><th>Richtig</th></tr>'+
+    players.map((p,i)=>'<tr>'+
+      '<td><span class="medal">'+(['🥇','🥈','🥉'][i]||(i+1)+'.')+'</span></td>'+
+      '<td>'+esc(p.name)+'</td>'+
+      '<td class="score">'+(p.score||0).toLocaleString('de-DE')+'</td>'+
+      '<td>'+(p.correct||0)+' / '+questions.filter(q=>q.type!=='info').length+'</td></tr>').join('')+
+    '</table></div>'+
+    '<div class="section"><h2>❓ Fragen</h2>'+
+    '<table><tr><th>#</th><th>Frage</th><th>Typ</th><th>Richtige Antwort</th></tr>'+
+    questions.filter(q=>q.type!=='info').map((q,i)=>{
+      let ans='';
+      if(q.type==='mc') ans=q.answers&&q.answers[q.correct]?esc(q.answers[q.correct]):'?';
+      else if(q.type==='tf') ans=q.correct===1?'✅ Wahr':'❌ Falsch';
+      else if(q.type==='mc_multi') ans=(q.correct||[]).map(ci=>q.answers&&q.answers[ci]?esc(q.answers[ci]):'?').join(', ');
+      else if(q.type==='estimate'||q.type==='slider') ans=(q.correctValue!=null?q.correctValue:'?')+' '+(q.unit||'');
+      else if(q.type==='input') ans=esc(q.correctText||'');
+      return '<tr><td>'+(i+1)+'</td><td>'+esc(q.q||'')+'</td>'+
+        '<td>'+esc({mc:'Multiple Choice',tf:'Wahr/Falsch',mc_multi:'Mehrfachauswahl',estimate:'Schätzfrage',input:'Freitext',slider:'Schieberegler'}[q.type]||q.type)+'</td>'+
+        '<td>'+ans+'</td></tr>';
+    }).join('')+
+    '</table></div></body></html>';
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=(room.title||'quiz').replace(/[^a-z0-9äöü]/gi,'_')+'_ergebnisse.html';
+  a.click();URL.revokeObjectURL(url);
+  toast('📄 Ergebnisse exportiert!','var(--green)');
+}
+
+
 renderEditor();
 updateProUI();
 
