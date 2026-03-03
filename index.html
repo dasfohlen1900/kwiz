@@ -342,19 +342,6 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .img-remove{position:absolute;top:6px;right:6px;background:rgba(255,59,92,.85);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:800;padding:4px 10px;cursor:pointer;transition:opacity .15s}
 .img-err{font-size:11px;color:var(--red);margin-top:4px}
 
-/* ── AI GENERATOR ── */
-.ai-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
-.ai-modal-bg.show{display:flex}
-.ai-modal{background:linear-gradient(160deg,#0a0a1e,#121228);border:1px solid rgba(176,109,255,.3);border-radius:28px;padding:32px 28px;max-width:500px;width:100%;box-shadow:0 30px 80px rgba(176,109,255,.2)}
-.ai-modal h2{font-family:'Righteous',cursive;font-size:26px;margin-bottom:6px;background:linear-gradient(135deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.ai-result-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:background .15s,border-color .15s}
-.ai-result-item:hover{background:rgba(176,109,255,.1);border-color:rgba(176,109,255,.4)}
-.ai-result-item.selected{background:rgba(176,109,255,.12);border-color:var(--purple)}
-.ai-q-text{font-weight:700;font-size:14px;margin-bottom:6px}
-.ai-q-meta{font-size:12px;color:var(--muted)}
-.ai-loading{text-align:center;padding:32px 0}
-.ai-loading p{color:var(--muted);font-size:14px;margin-top:12px}
-
 /* ── PUBLIC LIBRARY ── */
 #publicLib{justify-content:flex-start;padding-top:80px}
 .pub-lib-header{position:fixed;top:0;left:0;right:0;background:rgba(8,8,23,.95);backdrop-filter:blur(16px);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);z-index:100}
@@ -632,65 +619,6 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
   </div>
 </div>
 
-
-<!-- AI GENERATOR MODAL -->
-<div class="ai-modal-bg" id="aiModalBg">
-  <div class="ai-modal">
-    <h2>🤖 KI-Fragengenerator</h2>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Thema eingeben → KI generiert passende Fragen</p>
-    <div id="aiStep1">
-      <div style="background:rgba(255,149,0,.07);border:1px solid rgba(255,149,0,.25);border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start">
-        <span style="font-size:20px;flex-shrink:0">🔑</span>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:800;color:var(--orange);margin-bottom:4px">Anthropic API-Key</div>
-          <input class="input" id="aiApiKey" type="password" placeholder="sk-ant-..." style="font-size:13px;margin-bottom:4px" oninput="saveAiKey(this.value)">
-          <p style="font-size:11px;color:var(--muted)">Wird nur lokal im Browser gespeichert. <a href="https://console.anthropic.com/keys" target="_blank" style="color:var(--orange)">Key erstellen →</a></p>
-        </div>
-      </div>
-      <div class="lbl">Thema / Beschreibung</div>
-      <input class="input" id="aiTopic" placeholder="z.B. Deutsche Geschichte, Fußball WM, Physik..." style="margin-bottom:10px">
-      <div style="display:flex;gap:10px;margin-bottom:16px">
-        <div style="flex:1"><div class="lbl">Anzahl Fragen</div>
-          <select class="input" id="aiCount" style="cursor:pointer">
-            <option value="3">3 Fragen</option>
-            <option value="5" selected>5 Fragen</option>
-            <option value="8">8 Fragen</option>
-            <option value="10">10 Fragen</option>
-          </select>
-        </div>
-        <div style="flex:1"><div class="lbl">Fragetypen</div>
-          <select class="input" id="aiTypes" style="cursor:pointer">
-            <option value="mix">Mix</option>
-            <option value="mc">Multiple Choice</option>
-            <option value="tf">Wahr / Falsch</option>
-          </select>
-        </div>
-      </div>
-      <button class="btn btn-purple" onclick="runAiGenerate()">🤖 Fragen generieren</button>
-      <button class="btn btn-ghost" style="margin-top:8px" onclick="closeAiModal()">Abbrechen</button>
-    </div>
-    <div id="aiStep2" style="display:none">
-      <div class="ai-loading" id="aiLoading">
-        <div class="spinner" style="margin:auto;width:36px;height:36px;border-width:4px"></div>
-        <p style="margin-top:14px">KI denkt nach…</p>
-      </div>
-      <div id="aiResults" style="display:none">
-        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Wähle Fragen aus, die du übernehmen möchtest:</p>
-        <div id="aiResultList" style="max-height:340px;overflow-y:auto;margin-bottom:14px"></div>
-        <div style="display:flex;gap:10px">
-          <button class="btn btn-green" onclick="addAiQuestions()" style="flex:1">✅ Ausgewählte hinzufügen</button>
-          <button class="btn btn-ghost" onclick="closeAiModal()" style="flex:1">Abbrechen</button>
-        </div>
-      </div>
-      <div id="aiError" style="display:none;color:var(--red);font-size:14px;text-align:center;padding:20px">
-        <p style="font-size:32px;margin-bottom:8px">❌</p>
-        <p id="aiErrMsg"></p>
-        <button class="btn btn-ghost" style="margin-top:12px;width:auto;padding:10px 24px" onclick="showAiStep(1)">← Zurück</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- PUBLIC LIBRARY -->
 <div id="publicLib" class="screen" style="justify-content:flex-start;padding:80px 20px 40px">
   <div class="pub-lib-header">
@@ -712,7 +640,6 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
     <button class="btn btn-ghost btn-sm" style="width:auto" onclick="showScreen('home')">← Zurück</button>
     <h2>Quiz erstellen</h2>
     <div style="display:flex;gap:8px;align-items:center">
-      <button class="btn btn-ghost btn-sm" style="width:auto" onclick="openAiModal()">🤖 KI</button>
       <button class="btn btn-ghost btn-sm" style="width:auto" onclick="saveQuizToAccount()" id="saveBtn">💾 Speichern</button>
       <button class="btn btn-red btn-sm" style="width:auto" onclick="startHosting()">🚀 Hosten</button>
       <div class="acc-pill" id="accPillEditor" style="display:none" onclick="toggleProfileMenu()">
@@ -2076,121 +2003,6 @@ function launchConfetti(duration=3500){
     else{ctx.clearRect(0,0,canvas.width,canvas.height);canvas.style.display='none';}
   }
   requestAnimationFrame(frame);
-}
-
-// ─── AI GENERATOR ────────────────────────────
-let aiGeneratedQs=[];
-
-function openAiModal(){
-  document.getElementById('aiModalBg').classList.add('show');
-  showAiStep(1);
-  const saved=localStorage.getItem(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)||'';
-  const inp=document.getElementById('aiApiKey');
-  if(inp) inp.value=saved;
-}
-function saveAiKey(v){
-  if(v.trim()) localStorage.setItem('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',v.trim());
-  else localStorage.removeItem('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');
-}
-function closeAiModal(){document.getElementById('aiModalBg').classList.remove('show');}
-function showAiStep(n){
-  document.getElementById('aiStep1').style.display=n===1?'':'none';
-  document.getElementById('aiStep2').style.display=n===2?'':'none';
-}
-document.addEventListener('DOMContentLoaded',()=>{
-  const bg=document.getElementById('aiModalBg');
-  if(bg) bg.addEventListener('click',e=>{if(e.target===bg)closeAiModal();});
-});
-
-async function runAiGenerate(){
-  const topic=document.getElementById('aiTopic').value.trim();
-  if(!topic){toast('Bitte Thema eingeben!','var(--red)');return;}
-  const count=document.getElementById('aiCount').value;
-  const types=document.getElementById('aiTypes').value;
-  showAiStep(2);
-  document.getElementById('aiLoading').style.display='';
-  document.getElementById('aiResults').style.display='none';
-  document.getElementById('aiError').style.display='none';
-
-  const typeInstr=types==='mc'?'Nur Multiple-Choice-Fragen (type:"mc").':
-    types==='tf'?'Nur Wahr/Falsch-Fragen (type:"tf").':
-    'Mix aus Multiple Choice (type:"mc") und Wahr/Falsch (type:"tf").';
-
-  const prompt=`Erstelle ${count} Quiz-Fragen auf Deutsch zum Thema: "${topic}".
-${typeInstr}
-Antworte NUR mit einem JSON-Array, kein anderer Text, kein Markdown.
-Format für mc: {"type":"mc","q":"Frage?","answers":["A","B","C","D"],"correct":0,"time":20}
-  (correct = Index der richtigen Antwort, 0-3)
-Format für tf: {"type":"tf","q":"Aussage...","correct":1,"time":15}
-  (correct: 1=wahr, 0=falsch)
-Gib nur das Array zurück, keine Erklärungen.`;
-
-  try{
-    const apiKey=(document.getElementById('aiApiKey')?.value||localStorage.getItem('kwiz_ai_key')||'').trim();
-    if(!apiKey||!apiKey.startsWith('sk-ant-')){
-      document.getElementById('aiLoading').style.display='none';
-      document.getElementById('aiError').style.display='';
-      document.getElementById('aiErrMsg').textContent='Bitte gib einen gültigen Anthropic API-Key ein (beginnt mit sk-ant-).';
-      return;
-    }
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:2000,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    const data=await resp.json();
-    if(!resp.ok) throw new Error(data.error?.message||'API Fehler');
-    const raw=data.content?.map(b=>b.text||'').join('').trim();
-    const match=raw.match(/\[.*\]/s);
-    if(!match) throw new Error('Kein gültiges JSON in der Antwort');
-    const qs=JSON.parse(match[0]);
-    if(!Array.isArray(qs)||!qs.length) throw new Error('Leeres Array erhalten');
-    aiGeneratedQs=qs;
-    renderAiResults(qs);
-    document.getElementById('aiLoading').style.display='none';
-    document.getElementById('aiResults').style.display='';
-  }catch(e){
-    document.getElementById('aiLoading').style.display='none';
-    document.getElementById('aiError').style.display='';
-    document.getElementById('aiErrMsg').textContent='Fehler: '+e.message;
-  }
-}
-
-function renderAiResults(qs){
-  const list=document.getElementById('aiResultList');
-  list.innerHTML=qs.map((q,i)=>{
-    const typeLabel=q.type==='tf'?'Wahr/Falsch':'Multiple Choice';
-    const answers=q.type==='mc'?q.answers.map((a,j)=>'<span style="display:inline-block;background:'+['rgba(230,33,58,.2)','rgba(19,104,206,.2)','rgba(26,138,74,.2)','rgba(217,119,6,.2)'][j]+';border-radius:6px;padding:2px 8px;font-size:11px;margin:2px">'+esc(a)+(j===q.correct?' ✓':'')+'</span>').join('')
-      :'<span style="font-size:12px;color:var(--muted)">'+(q.correct===1?'✅ Wahr':'❌ Falsch')+'</span>';
-    return '<div class="ai-result-item selected" id="aiItem'+i+'" onclick="toggleAiItem('+i+')">'+
-      '<div class="ai-q-text">'+esc(q.q)+'</div>'+
-      '<div class="ai-q-meta" style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
-      '<span style="background:rgba(176,109,255,.2);color:var(--purple);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800">'+typeLabel+'</span>'+
-      '<span>⏱ '+q.time+'s</span></div>'+
-      '<div>'+answers+'</div></div>';
-  }).join('');
-}
-
-function toggleAiItem(i){
-  const el=document.getElementById('aiItem'+i);
-  el.classList.toggle('selected');
-}
-
-function addAiQuestions(){
-  const selected=aiGeneratedQs.filter((_,i)=>{
-    const el=document.getElementById('aiItem'+i);
-    return el&&el.classList.contains('selected');
-  });
-  if(!selected.length){toast('Keine Fragen ausgewählt!','var(--yellow)');return;}
-  selected.forEach(q=>editorQs.push({...q}));
-  renderEditor();
-  closeAiModal();
-  toast('✅ '+selected.length+' Frage'+(selected.length===1?'':'n')+' hinzugefügt!','var(--green)');
-  setTimeout(()=>document.querySelectorAll('.q-card')[editorQs.length-1]?.scrollIntoView({behavior:'smooth',block:'center'}),80);
 }
 
 // ─── IMAGE UPLOAD ─────────────────────────────
