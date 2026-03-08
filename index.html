@@ -49,6 +49,7 @@
   --red:#ff3b5c; --blue:#1e90ff; --green:#00d68f; --yellow:#ffcc00;
   --purple:#b06dff; --orange:#ff9500; --text:#f0f0ff; --muted:rgba(240,240,255,.45);
   --pro-gold:#ffd700; --pro-glow:rgba(255,215,0,.4);
+  --max-cyan:#00e5ff; --max-pink:#ff2d78; --max-glow:rgba(0,229,255,.35);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -75,6 +76,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .btn-purple{background:var(--purple);color:#fff;box-shadow:0 8px 24px rgba(176,109,255,.3)}
 .btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}
 .btn-pro{background:linear-gradient(135deg,#ffd700,#ff9500);color:#1a0d00;box-shadow:0 8px 28px rgba(255,215,0,.45);font-weight:900}
+.btn-max{background:linear-gradient(135deg,#00e5ff,#ff2d78);color:#fff;box-shadow:0 8px 28px rgba(0,229,255,.4);font-weight:900}
 .btn-sm{padding:9px 18px;font-size:13px;border-radius:10px}
 .btn-xs{padding:6px 12px;font-size:12px;border-radius:8px;width:auto}
 .input{width:100%;padding:13px 16px;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;outline:none;transition:border-color .2s}
@@ -107,6 +109,38 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .fake-btn-pro::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shimmer 2.5s infinite}
 .fake-btn-pro{position:relative;overflow:hidden}
 @keyframes shimmer{0%{left:-100%}100%{left:200%}}
+
+/* ── MAX TIER ── */
+.max-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#00e5ff,#ff2d78);color:#fff;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.max-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px)}
+.max-modal-bg.show{display:flex}
+.max-modal{background:linear-gradient(160deg,#050514,#0a0820,#120824);border:1px solid rgba(0,229,255,.35);border-radius:28px;padding:36px 32px;max-width:460px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,229,255,.12),0 0 0 1px rgba(255,45,120,.15),inset 0 1px 0 rgba(0,229,255,.1);position:relative}
+.max-modal h2{font-family:'Righteous',cursive;font-size:34px;background:linear-gradient(135deg,#00e5ff,#ff2d78);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.max-modal p{color:rgba(240,240,255,.7);font-size:15px;margin-bottom:24px;line-height:1.6}
+.max-features{text-align:left;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.2);border-radius:16px;padding:18px 20px;margin-bottom:24px}
+.max-feat-item{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:14px;font-weight:600;color:rgba(240,240,255,.85)}
+.max-feat-item .feat-icon{font-size:18px;width:24px;text-align:center}
+.max-price{font-family:'Righteous',cursive;font-size:40px;background:linear-gradient(135deg,#00e5ff,#ff2d78);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.max-price span{font-size:18px;color:var(--muted);-webkit-text-fill-color:var(--muted)}
+.fake-btn-max{background:linear-gradient(135deg,#00e5ff,#7c3aed,#ff2d78);background-size:200% 100%;color:#fff;border:none;border-radius:14px;padding:16px 32px;font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;width:100%;cursor:pointer;box-shadow:0 8px 28px rgba(0,229,255,.35);transition:transform .15s,box-shadow .2s;margin-bottom:10px;position:relative;overflow:hidden;animation:maxGradShift 3s ease infinite;text-shadow:0 1px 4px rgba(0,0,0,.3)}
+.fake-btn-max:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(0,229,255,.5)}
+.fake-btn-max:active{transform:scale(.97)}
+.fake-btn-max::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:shimmer 2.5s infinite}
+@keyframes maxGradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.max-close{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;padding:8px}
+.max-close:hover{color:var(--text)}
+.add-type-btn.max-type{border-color:rgba(0,229,255,.35);background:rgba(0,229,255,.04)}
+.add-type-btn.max-type .i{filter:drop-shadow(0 0 6px var(--max-cyan))}
+.max-type-corner{position:absolute;top:6px;right:6px;font-size:10px;background:linear-gradient(135deg,#00e5ff,#ff2d78);color:#fff;border-radius:6px;padding:1px 5px;font-weight:900;text-shadow:0 1px 2px rgba(0,0,0,.3)}
+.pm-max-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(0,229,255,.15),rgba(255,45,120,.1));border:1px solid rgba(0,229,255,.3);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:800;color:var(--max-cyan);margin-top:8px}
+.type-mc6{background:rgba(0,229,255,.2);color:var(--max-cyan)}
+.type-ranking{background:rgba(255,45,120,.2);color:#ff2d78}
+
+/* ── OVERLAY CLOSE X BUTTON ── */
+.overlay-x{position:absolute;top:14px;right:14px;width:34px;height:34px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--muted);transition:background .15s,color .15s;z-index:10;line-height:1;font-family:sans-serif}
+.overlay-x:hover{background:rgba(255,59,92,.2);color:#fff;border-color:rgba(255,59,92,.4)}
+.pro-modal{position:relative}
+.kwiz-dialog{position:relative}
 
 /* AUTH */
 .auth-tabs{display:flex;gap:0;margin-bottom:20px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
@@ -161,7 +195,7 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 #myQuizzes{justify-content:flex-start;padding-top:80px}
 .mq-header{position:fixed;top:0;left:0;right:0;background:rgba(8,8,23,.95);backdrop-filter:blur(16px);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);z-index:100}
 .mq-header h2{font-family:'Righteous',cursive;font-size:20px;flex:1}
-.quiz-lib-item{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:16px 20px;margin-bottom:10px;width:100%;max-width:580px;cursor:pointer;transition:background .15s,transform .12s}
+.quiz-lib-item{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:16px 20px;margin-bottom:10px;width:100%;max-width:580px;cursor:pointer;transition:background .15s,transform .12px}
 .quiz-lib-item:hover{background:rgba(255,255,255,.07);transform:translateX(3px)}
 .quiz-lib-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(176,109,255,.3),rgba(30,144,255,.2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .quiz-lib-info{flex:1;min-width:0}
@@ -237,6 +271,8 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .ans-play-btn[data-c="1"]{background:#1368ce;box-shadow:0 6px 20px rgba(19,104,206,.4)}
 .ans-play-btn[data-c="2"]{background:#1a8a4a;box-shadow:0 6px 20px rgba(26,138,74,.35)}
 .ans-play-btn[data-c="3"]{background:#d97706;box-shadow:0 6px 20px rgba(217,119,6,.4)}
+.ans-play-btn[data-c="4"]{background:#7c3aed;box-shadow:0 6px 20px rgba(124,58,237,.4)}
+.ans-play-btn[data-c="5"]{background:#0891b2;box-shadow:0 6px 20px rgba(8,145,178,.4)}
 .ans-play-btn.dimmed{opacity:.3;filter:grayscale(.5);transform:scale(.96)!important}
 .ans-play-btn.selected{outline:4px solid #fff;transform:scale(.97)}
 .tf-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:600px;width:100%}
@@ -245,7 +281,6 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .tf-btn.tf-true{background:linear-gradient(135deg,#00b86e,#007a4a);box-shadow:0 8px 30px rgba(0,184,110,.5)}
 .tf-btn.tf-false{background:linear-gradient(135deg,#e6213a,#9a0020);box-shadow:0 8px 30px rgba(230,33,58,.5)}
 .tf-btn .tf-icon{font-size:42px}.tf-btn.dimmed{opacity:.3;filter:grayscale(.5)}.tf-btn.selected{outline:5px solid #fff}
-
 
 /* Multi-select answer buttons */
 .ans-play-btn.multi-selected{outline:4px solid #fff;background-image:linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,.15))}
@@ -339,7 +374,7 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .img-url-row .input{flex:1;font-size:13px}
 .img-preview{position:relative;margin-top:8px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
 .img-preview img{width:100%;max-height:180px;object-fit:contain;display:block;background:rgba(255,255,255,.04)}
-.img-remove{position:absolute;top:6px;right:6px;background:rgba(255,59,92,.85);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:800;padding:4px 10px;cursor:pointer;transition:opacity .15s}
+.img-remove{position:absolute;top:6px;right:6px;background:rgba(255,59,92,.85);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:800;padding:4px 10px;cursor:pointer;transition:opacity .15px}
 .img-err{font-size:11px;color:var(--red);margin-top:4px}
 
 /* ── PUBLIC LIBRARY ── */
@@ -364,7 +399,6 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .export-btn{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;padding:10px 18px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s}
 .export-btn:hover{background:rgba(255,255,255,.1)}
 
-
 /* ── DIALOG OVERLAY ── */
 .kwiz-dialog-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
 .kwiz-dialog-bg.show{display:flex}
@@ -382,7 +416,6 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .install-step-num{width:28px;height:28px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;margin-top:2px}
 .install-step-text{font-size:13px;color:var(--text);line-height:1.5}
 
-
 /* ── GOOGLE SIGN-IN ── */
 .btn-google{background:#fff;color:#1f1f1f;border:1.5px solid #e0e0e0;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .btn-google:hover{background:#f8f8f8;box-shadow:0 4px 14px rgba(0,0,0,.18)}
@@ -399,10 +432,13 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 .feature-locked::after{content:'🔒 Anmeldung erforderlich';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,8,23,.85);border-radius:inherit;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--muted);pointer-events:all;cursor:not-allowed}
 .feature-locked-btn{pointer-events:all !important;opacity:1 !important}
 
-
 .mode-card.guest-locked{opacity:.5;pointer-events:auto;position:relative}
 .mode-card.guest-locked::after{content:'\1F512';position:absolute;top:8px;right:10px;font-size:16px}
 .guest-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,149,0,.15);border:1px solid rgba(255,149,0,.3);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800;color:var(--orange)}
+
+/* ── SOLO HOST BUTTON on player reveal ── */
+.solo-next-btn{background:linear-gradient(135deg,var(--green),#007a4a);border:none;border-radius:14px;padding:14px 36px;font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;color:#fff;cursor:pointer;box-shadow:0 6px 20px rgba(0,214,143,.4);transition:transform .15s,box-shadow .2s;margin-top:8px}
+.solo-next-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,214,143,.5)}
 
 @media(max-width:520px){
   .ans-play-grid,.tf-grid,#home .modes,.add-q-types,.add-q-types-pro,.ans-grid-editor{grid-template-columns:1fr}
@@ -420,6 +456,7 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 <!-- PRO UPSELL MODAL -->
 <div class="pro-modal-bg" id="proModalBg">
   <div class="pro-modal">
+    <button class="overlay-x" onclick="closeProModal()" title="Schließen">✕</button>
     <div id="proModalContent">
       <!-- Step 1: Sales -->
       <div id="proStep1">
@@ -498,13 +535,74 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
   </div>
 </div>
 
-<!-- Home topbar with account pill -->
+<!-- MAX UPSELL MODAL -->
+<div class="max-modal-bg" id="maxModalBg">
+  <div class="max-modal">
+    <button class="overlay-x" onclick="closeMaxModal()" title="Schließen">✕</button>
+    <div id="maxModalContent">
+      <!-- Step 1: Sales -->
+      <div id="maxStep1">
+        <div style="font-size:64px;margin-bottom:12px;filter:drop-shadow(0 0 24px var(--max-cyan))">🚀</div>
+        <h2>KWIZ! Max</h2>
+        <p>Das ultimative Quiz-Erlebnis — exklusive Frageformate und unbegrenzte Kreativität für echte Power-Hosts!</p>
+        <div class="max-features">
+          <div class="max-feat-item"><span class="feat-icon">⬠</span> 6-Antwort-Fragen – noch mehr Auswahl</div>
+          <div class="max-feat-item"><span class="feat-icon">🏆</span> Reihenfolge-Fragen – ordne richtig ein</div>
+          <div class="max-feat-item"><span class="feat-icon">⚡</span> Alle Pro-Features inklusive</div>
+          <div class="max-feat-item"><span class="feat-icon">🎨</span> Exklusive Max-Themes</div>
+          <div class="max-feat-item"><span class="feat-icon">📈</span> Erweiterte Statistiken & Analytics</div>
+          <div class="max-feat-item"><span class="feat-icon">🌟</span> Priority Support</div>
+        </div>
+        <div class="max-price">9,99 € <span>/ Monat</span></div>
+        <button class="fake-btn-max" onclick="goToMaxPayment()">🚀 Jetzt Max werden</button>
+        <br>
+        <button class="max-close" onclick="closeMaxModal()">Vielleicht später</button>
+      </div>
+      <!-- Step 2: Payment -->
+      <div id="maxStep2" style="display:none">
+        <div style="font-size:40px;margin-bottom:12px">💳</div>
+        <h2 style="font-size:24px;margin-bottom:16px">Zahlungsdetails</h2>
+        <div style="text-align:left;display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+          <div><div class="lbl" style="margin-bottom:6px">Karteninhaber</div><input class="input" id="maxPayName" placeholder="Max Mustermann" autocomplete="off"></div>
+          <div><div class="lbl" style="margin-bottom:6px">Kartennummer</div><input class="input" id="maxPayCard" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" autocomplete="off" inputmode="numeric"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div><div class="lbl" style="margin-bottom:6px">Ablaufdatum</div><input class="input" id="maxPayExp" placeholder="MM/JJ" maxlength="5" oninput="formatExpiry(this)" autocomplete="off" inputmode="numeric"></div>
+            <div><div class="lbl" style="margin-bottom:6px">CVV</div><input class="input" id="maxPayCvv" placeholder="•••" maxlength="3" type="password" autocomplete="off" inputmode="numeric"></div>
+          </div>
+        </div>
+        <div style="background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:rgba(0,229,255,.8);margin-bottom:16px;display:flex;align-items:center;gap:8px"><span>🔒</span> Sichere 256-bit SSL-Verschlüsselung</div>
+        <button class="fake-btn-max" onclick="processMaxPayment()" id="maxPayBtn">💳 9,99 € bezahlen</button>
+        <br>
+        <button class="max-close" onclick="showMaxStep(1)">← Zurück</button>
+      </div>
+      <!-- Step 3: Processing -->
+      <div id="maxStep3" style="display:none;text-align:center;padding:20px 0">
+        <div style="width:64px;height:64px;border:4px solid rgba(0,229,255,.2);border-top-color:var(--max-cyan);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px"></div>
+        <p style="font-weight:700;font-size:16px;color:var(--max-cyan)">Zahlung wird verarbeitet…</p>
+        <p class="muted" style="margin-top:8px;font-size:13px">Bitte warten</p>
+      </div>
+      <!-- Step 4: Success -->
+      <div id="maxStep4" style="display:none;text-align:center">
+        <div style="font-size:72px;margin-bottom:12px;animation:bounceIn .6s cubic-bezier(.34,1.56,.64,1)">🚀</div>
+        <h2 style="margin-bottom:8px">Willkommen bei Max!</h2>
+        <p style="color:rgba(240,240,255,.7);margin-bottom:20px">Du hast alle Features freigeschaltet. Genieß das volle Erlebnis!</p>
+        <div style="display:flex;flex-direction:column;gap:8px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.2);border-radius:14px;padding:16px;margin-bottom:20px">
+          <div style="font-size:13px;font-weight:700;color:var(--max-cyan)">✅ 6-Antwort-Fragen freigeschaltet</div>
+          <div style="font-size:13px;font-weight:700;color:var(--max-cyan)">✅ Reihenfolge-Fragen freigeschaltet</div>
+          <div style="font-size:13px;font-weight:700;color:var(--max-cyan)">✅ Alle Pro-Features inklusive</div>
+        </div>
+        <button class="fake-btn-max" onclick="activateMax()">🚀 Los geht's!</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="home-topbar" id="homeTopbar">
   <canvas id="confettiCanvas"></canvas>
 
 <!-- REUSABLE CONFIRM DIALOG -->
 <div class="kwiz-dialog-bg" id="kwizDialogBg">
   <div class="kwiz-dialog" id="kwizDialog">
+    <button class="overlay-x" onclick="document.getElementById('kwizDialogBg').classList.remove('show')" title="Schließen">✕</button>
     <div class="dlg-icon" id="dlgIcon">⚠️</div>
     <div class="dlg-title" id="dlgTitle">Bist du sicher?</div>
     <div class="dlg-body" id="dlgBody"></div>
@@ -515,6 +613,7 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 <!-- INSTALL OVERLAY -->
 <div class="kwiz-dialog-bg" id="installDialogBg">
   <div class="kwiz-dialog">
+    <button class="overlay-x" onclick="document.getElementById('installDialogBg').classList.remove('show')" title="Schließen">✕</button>
     <div class="dlg-icon" id="installIcon">📲</div>
     <div class="dlg-title" id="installTitle">App installieren</div>
     <div class="install-steps" id="installSteps"></div>
@@ -538,6 +637,7 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
     <div style="text-align:center;margin-top:8px">
       <span class="guest-pill" id="pmGuestBadge" style="display:none">👤 Gast</span>
       <span class="pm-pro-badge" id="pmProBadge" style="display:none">⚡ Pro aktiv</span>
+      <span class="pm-max-badge" id="pmMaxBadge" style="display:none">🚀 Max aktiv</span>
     </div>
   </div>
   <button class="pm-item" id="pmMyQuizItem" onclick="pmGoMyQuizzes()">
@@ -545,6 +645,9 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
   </button>
   <button class="pm-item" id="pmProItem" onclick="pmManagePro()">
     <span class="pm-icon" id="pmProIcon">⚡</span><span class="pm-label" id="pmProLabel">Pro freischalten</span><span class="pm-arrow">›</span>
+  </button>
+  <button class="pm-item" id="pmMaxItem" onclick="pmManageMax()">
+    <span class="pm-icon" id="pmMaxIcon">🚀</span><span class="pm-label" id="pmMaxLabel">Max freischalten</span><span class="pm-arrow">›</span>
   </button>
   <button class="pm-item" onclick="pmGoInfo()">
     <span class="pm-icon">ℹ️</span><span class="pm-label">Info & Hilfe</span><span class="pm-arrow">›</span>
@@ -625,6 +728,7 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
     </div>
   </div>
   <button class="btn btn-pro" style="max-width:480px;margin-top:4px" id="homeProBtn" onclick="handleHomeProBtn()">⚡ KWIZ! Pro – Neue Fragetypen freischalten</button>
+  <button class="btn btn-max" style="max-width:480px;margin-top:4px" id="homeMaxBtn" onclick="handleHomeMaxBtn()">🚀 KWIZ! Max – Das ultimative Erlebnis</button>
   <button class="btn btn-ghost" id="pwaInstallBtn" style="max-width:480px;margin-top:4px;display:none" onclick="installPWA()">📲 App installieren</button>
   <p class="muted" style="max-width:360px;text-align:center;margin-top:12px">Host teilt den <strong style="color:var(--yellow)">Raum-Code</strong> — alle spielen live mit.</p>
 </div>
@@ -707,6 +811,12 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
       <div class="add-type-btn pro-type" onclick="guardedAddPro('estimate')"><div class="i">🎯</div>Schätzfrage<div class="pro-type-corner" id="pCorner1">PRO</div></div>
       <div class="add-type-btn pro-type" onclick="guardedAddPro('input')"><div class="i">⌨️</div>Freitexteingabe<div class="pro-type-corner" id="pCorner2">PRO</div></div>
       <div class="add-type-btn pro-type" onclick="guardedAddPro('slider')"><div class="i">🎚️</div>Schieberegler<div class="pro-type-corner" id="pCorner3">PRO</div></div>
+    </div>
+    <!-- Max types -->
+    <div class="pro-section-label" id="maxSectionLabel"><span>🚀 Max-Fragetypen</span></div>
+    <div class="add-q-types-pro" style="grid-template-columns:1fr 1fr">
+      <div class="add-type-btn max-type" onclick="guardedAddMax('mc6')"><div class="i">⬠</div>6 Antworten<div class="max-type-corner" id="mCorner0">MAX</div></div>
+      <div class="add-type-btn max-type" onclick="guardedAddMax('ranking')"><div class="i">🏆</div>Reihenfolge<div class="max-type-corner" id="mCorner1">MAX</div></div>
     </div>
   </div>
 </div>
@@ -828,7 +938,11 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
       <span class="info-slide-icon" id="piIcon">📊</span>
       <div class="info-slide-title" id="piTitle"></div>
       <div class="info-slide-body" id="piBody"></div>
-      <div class="mt24"><p class="muted" style="font-size:13px">Warte auf den Host...</p></div>
+      <!-- Solo mode gets a "Weiter" button; multiplayer shows wait message -->
+      <div class="mt24" id="piWaitMsg"><p class="muted" style="font-size:13px">Warte auf den Host...</p></div>
+      <div class="mt24" id="piSoloNext" style="display:none">
+        <button class="solo-next-btn" onclick="soloInfoNext()">Weiter →</button>
+      </div>
     </div>
   </div>
 </div>
@@ -855,7 +969,9 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
     <div class="pts-row"><span id="prStreakLbl">Streak</span><span id="prStreakPts"></span></div>
     <div class="pts-row pts-total"><span>Gesamt</span><span id="prTotal">+0</span></div>
   </div>
-  <p class="muted">Warte auf den Host...</p>
+  <!-- Solo: show Weiter button; multiplayer: show wait message -->
+  <p class="muted" id="prWaitMsg">Warte auf den Host...</p>
+  <button class="solo-next-btn" id="prSoloNextBtn" style="display:none" onclick="soloNextFromReveal()">Weiter →</button>
 </div>
 
 <!-- LEADERBOARD -->
@@ -887,12 +1003,11 @@ body:not(:has(#home.active)) #homeTopbar{display:none!important}
 
 <script>
 // ═══════════════════════════════════════════
-//  KWIZ! v4 — Auth + Quiz Library + Pro Types + QR
+//  KWIZ! v4 — Fixed: Image upload, Max timer, Solo host
 // ═══════════════════════════════════════════
 const BASE_URL='https://kwiz-app-five.vercel.app/';
-const SHAPES=['▲','◆','●','■'];
-const ANS_COLORS=['#e6213a','#1368ce','#1a8a4a','#d97706'];
-// DEMO_Q removed — Solo mode now uses saved quizzes
+const SHAPES=['▲','◆','●','■','⬠','▽'];
+const ANS_COLORS=['#e6213a','#1368ce','#1a8a4a','#d97706','#7c3aed','#0891b2'];
 
 let fbDb=null, fbAuth=null, currentUser=null, unsubRoom=null, currentEditId=null;
 let S={role:null,code:null,name:null,score:0,streak:0,selected:null,timerIv:null,timeLeft:0,startTs:0,qIdx:0,lastPhase:null};
@@ -903,12 +1018,20 @@ let qrInstance=null;
 const PRO_KEY='kwiz_pro_active';
 let isPro=localStorage.getItem(PRO_KEY)==='1';
 
-function isProActive(){return isPro;}
+function isProActive(){return isPro||isMax;}
+
+// ─── MAX SYSTEM ──────────────────────────────
+const MAX_KEY='kwiz_max_active';
+let isMax=localStorage.getItem(MAX_KEY)==='1';
+if(isMax) isPro=true; // Max includes Pro
+
+function isMaxActive(){return isMax;}
 
 function updateProUI(){
   const homeBtn=document.getElementById('homeProBtn');
   const label=document.getElementById('proSectionLabel');
-  if(isPro){
+  const maxLabel=document.getElementById('maxSectionLabel');
+  if(isPro||isMax){
     if(homeBtn){
       homeBtn.innerHTML='✅ KWIZ! Pro aktiv – klicken zum Verwalten';
       homeBtn.style.background='linear-gradient(135deg,#00d68f,#007a4a)';
@@ -931,6 +1054,32 @@ function updateProUI(){
       if(el){el.style.background='';}
     });
   }
+  // Max section
+  if(isMax){
+    const homeMaxBtn=document.getElementById('homeMaxBtn');
+    if(homeMaxBtn){
+      homeMaxBtn.innerHTML='✅ KWIZ! Max aktiv – klicken zum Verwalten';
+      homeMaxBtn.style.background='linear-gradient(135deg,#0891b2,#7c3aed)';
+      homeMaxBtn.style.boxShadow='0 8px 28px rgba(0,229,255,.3)';
+    }
+    if(maxLabel) maxLabel.querySelector('span').innerHTML='🚀 Max-Fragetypen <span style="font-size:10px;color:var(--max-cyan);background:rgba(0,229,255,.12);padding:2px 6px;border-radius:6px;margin-left:4px">✅ AKTIV</span>';
+    ['mCorner0','mCorner1'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.style.background='linear-gradient(135deg,#00e5ff,#7c3aed)';}
+    });
+    document.querySelectorAll('.add-type-btn.max-type').forEach(b=>{b.style.opacity='1';});
+  } else {
+    const homeMaxBtn=document.getElementById('homeMaxBtn');
+    if(homeMaxBtn){
+      homeMaxBtn.innerHTML='🚀 KWIZ! Max – Das ultimative Erlebnis';
+      homeMaxBtn.style.background='';homeMaxBtn.style.boxShadow='';
+    }
+    if(maxLabel) maxLabel.querySelector('span').innerHTML='🚀 Max-Fragetypen <span style="font-size:10px;color:var(--muted);background:rgba(255,255,255,.06);padding:2px 6px;border-radius:6px;margin-left:4px">🔒 Gesperrt</span>';
+    ['mCorner0','mCorner1'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.style.background='';}
+    });
+  }
 }
 
 function handleHomeProBtn(){
@@ -946,8 +1095,55 @@ function handleHomeProBtn(){
   }
 }
 
+function handleHomeMaxBtn(){
+  if(isMax){
+    kwizConfirm({
+      icon:'🚀',title:'KWIZ! Max ist aktiv',
+      body:'Möchtest du Max deaktivieren?',
+      confirmLabel:'Deaktivieren',confirmClass:'btn-ghost',cancelLabel:'Behalten',
+      onConfirm:()=>{isMax=false;isPro=!!localStorage.getItem(PRO_KEY);localStorage.removeItem(MAX_KEY);updateProUI();updateProfileMenuPro();toast('Max deaktiviert','var(--muted)');}
+    });
+  } else {
+    openMaxModal();
+  }
+}
+
 function openProModal(){showProStep(1);document.getElementById('proModalBg').classList.add('show');}
 function closeProModal(){document.getElementById('proModalBg').classList.remove('show');}
+
+function openMaxModal(){showMaxStep(1);document.getElementById('maxModalBg').classList.add('show');}
+function closeMaxModal(){document.getElementById('maxModalBg').classList.remove('show');}
+function showMaxStep(n){[1,2,3,4].forEach(i=>{const el=document.getElementById('maxStep'+i);if(el)el.style.display=i===n?'':'none';});}
+function goToMaxPayment(){showMaxStep(2);}
+function processMaxPayment(){
+  const name=document.getElementById('maxPayName').value.trim();
+  const card=document.getElementById('maxPayCard').value.replace(/\s/g,'');
+  const exp=document.getElementById('maxPayExp').value.trim();
+  const cvv=document.getElementById('maxPayCvv').value.trim();
+  if(!name){toast('Bitte Namen eingeben','var(--red)');return;}
+  if(card.length<16){toast('Ungültige Kartennummer','var(--red)');return;}
+  if(exp.length<5){toast('Ungültiges Ablaufdatum','var(--red)');return;}
+  if(cvv.length<3){toast('Ungültiger CVV','var(--red)');return;}
+  showMaxStep(3);
+  setTimeout(()=>showMaxStep(4),2200);
+}
+function activateMax(){
+  if(currentUser&&currentUser.isAnonymous){
+    closeMaxModal();
+    kwizAlert({icon:'🔒',title:'Account erforderlich',body:'Max kann nur mit einem echten Account aktiviert werden.',btnLabel:'Anmelden',btnClass:'btn-blue',onClose:goToAuth});
+    return;
+  }
+  isMax=true;isPro=true;
+  localStorage.setItem(MAX_KEY,'1');localStorage.setItem(PRO_KEY,'1');
+  closeMaxModal();
+  updateProUI();updateProfileMenuPro();
+  toast('🚀 KWIZ! Max ist jetzt aktiv!','var(--max-cyan)');
+  if(activeScreen()==='createQuiz') renderEditor();
+}
+document.getElementById('maxModalBg').addEventListener('click',e=>{
+  const step3=document.getElementById('maxStep3');
+  if(e.target===e.currentTarget&&(!step3||step3.style.display==='none')) closeMaxModal();
+});
 
 function showProStep(n){
   [1,2,3,4].forEach(i=>{
@@ -990,7 +1186,7 @@ function activatePro(){
   }
   isPro=true;localStorage.setItem(PRO_KEY,'1');
   closeProModal();
-  updateProUI();
+  updateProUI();updateProfileMenuPro();
   toast('⚡ KWIZ! Pro ist jetzt aktiv!','var(--pro-gold)');
   if(activeScreen()==='createQuiz') renderEditor();
 }
@@ -1022,16 +1218,12 @@ window.addEventListener('fb-ready',()=>{
 function updateAccountPill(u){
   const nm=u.displayName||u.email?.split('@')[0]||'User';
   const initial=nm.charAt(0).toUpperCase();
-  // Main pill
   const pill=document.getElementById('accPill');
   if(pill){document.getElementById('accAvatar').textContent=initial;document.getElementById('accName').textContent=nm;pill.style.display='flex';}
-  // Editor pill
   const ep=document.getElementById('accPillEditor');
   if(ep){document.getElementById('accAvatarEditor').textContent=initial;ep.style.display='flex';}
-  // MQ pill
   const mqp=document.getElementById('accPillMQ');
   if(mqp){document.getElementById('accAvatarMQ').textContent=initial;mqp.style.display='flex';}
-  // Profile menu data
   document.getElementById('pmAvatarBig').textContent=initial;
   document.getElementById('pmName').textContent=nm;
   document.getElementById('pmEmail').textContent=u.email||(u.isAnonymous?'Gast-Konto':'');
@@ -1040,23 +1232,43 @@ function updateAccountPill(u){
 }
 function updateProfileMenuPro(){
   const badge=document.getElementById('pmProBadge');
+  const maxBadge=document.getElementById('pmMaxBadge');
   const icon=document.getElementById('pmProIcon');
   const lbl=document.getElementById('pmProLabel');
+  const maxIcon=document.getElementById('pmMaxIcon');
+  const maxLbl=document.getElementById('pmMaxLabel');
   const isGuest=currentUser&&currentUser.isAnonymous;
   if(isGuest){
     if(badge) badge.style.display='none';
+    if(maxBadge) maxBadge.style.display='none';
     if(icon) icon.textContent='🔒';
     if(lbl) lbl.textContent='Pro (Account erforderlich)';
+    if(maxIcon) maxIcon.textContent='🔒';
+    if(maxLbl) maxLbl.textContent='Max (Account erforderlich)';
+  } else if(isMax){
+    if(badge) badge.style.display='none';
+    if(maxBadge) maxBadge.style.display='inline-flex';
+    if(icon) icon.textContent='✅';
+    if(lbl) lbl.textContent='Pro (in Max inklusive)';
+    if(maxIcon) maxIcon.textContent='✅';
+    if(maxLbl) maxLbl.textContent='Max verwalten';
   } else if(isPro){
     if(badge) badge.style.display='inline-flex';
+    if(maxBadge) maxBadge.style.display='none';
     if(icon) icon.textContent='✅';
     if(lbl) lbl.textContent='Pro verwalten';
+    if(maxIcon) maxIcon.textContent='🚀';
+    if(maxLbl) maxLbl.textContent='Auf Max upgraden';
   } else {
     if(badge) badge.style.display='none';
+    if(maxBadge) maxBadge.style.display='none';
     if(icon) icon.textContent='⚡';
     if(lbl) lbl.textContent='Pro freischalten';
+    if(maxIcon) maxIcon.textContent='🚀';
+    if(maxLbl) maxLbl.textContent='Max freischalten';
   }
 }
+function pmManageMax(){closeProfileMenu();if(currentUser&&currentUser.isAnonymous){kwizAlert({icon:'🔒',title:'Account erforderlich',body:'Max ist nur für angemeldete Nutzer verfügbar.',btnLabel:'Anmelden',btnClass:'btn-blue',onClose:goToAuth});return;}if(isMax){handleHomeMaxBtn();}else{openMaxModal();}}
 function toggleProfileMenu(){
   const menu=document.getElementById('profileMenu');
   const bg=document.getElementById('profileMenuBg');
@@ -1064,7 +1276,6 @@ function toggleProfileMenu(){
   if(isOpen){closeProfileMenu();}
   else{
     updateProfileMenuPro();
-    // Position menu near whichever pill was clicked
     const pill=document.getElementById('accPill');
     const rect=pill?.getBoundingClientRect();
     if(rect){
@@ -1091,7 +1302,6 @@ async function updateMyQuizzesDesc(){
     document.getElementById('myQuizzesDesc').textContent=n?`${n} Quiz${n===1?'':'ze'}`:'Noch keine Quizze';
   }catch(e){}
 }
-// showAccountMenu replaced by toggleProfileMenu
 
 // ─── AUTH ───────────────────────────────────
 function switchAuthTab(t){
@@ -1197,6 +1407,8 @@ function validateQ(q){
   if(q.type==='estimate') return(q.q||'').trim()&&q.correctValue!=null;
   if(q.type==='input') return(q.q||'').trim()&&(q.correctText||'').trim();
   if(q.type==='slider') return(q.q||'').trim()&&q.correctValue!=null;
+  if(q.type==='mc6') return(q.q||'').trim()&&(q.answers||[]).every(a=>(a||'').trim());
+  if(q.type==='ranking') return(q.q||'').trim()&&(q.items||[]).every(a=>(a||'').trim());
   return(q.q||'').trim()&&q.answers.every(a=>(a||'').trim());
 }
 
@@ -1254,45 +1466,31 @@ async function publishFromLib(qid){
   if(!currentUser||currentUser.isAnonymous){guestLockAlert();return;}
   const qz=await dbGet('users/'+currentUser.uid+'/quizzes/'+qid);
   if(!qz) return;
-  const _qz=qz;
   kwizConfirm({
     icon:'🌐',title:'Quiz veröffentlichen?',
-    body:'"'+(_qz.title||'Ohne Titel')+'" wird für alle Nutzer sichtbar.',
+    body:'"'+(qz.title||'Ohne Titel')+'" wird für alle Nutzer sichtbar.',
     confirmLabel:'🌐 Veröffentlichen',confirmClass:'btn-green',
     onConfirm:async()=>{
-      const stripped=(_qz.questions||[]).map(q=>{const r={...q};delete r.image;return r;});
+      const stripped=(qz.questions||[]).map(q=>{const r={...q};delete r.image;return r;});
       const pid='pub_'+currentUser.uid.slice(0,8)+'_'+Date.now();
-      const pub={id:pid,title:_qz.title,emoji:_qz.emoji||'🎯',questions:stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
+      const pub={id:pid,title:qz.title,emoji:qz.emoji||'🎯',questions:stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
       try{await dbSet('public_quizzes/'+pid,pub);toast('🌐 Veröffentlicht!','var(--green)');}
       catch(e){toast('Fehler: '+e.message,'var(--red)');}
     }
   });
-  return; // async handled in callback
-  const stripped=(qz.questions||[]).map(q=>{const r={...q};delete r.image;return r;});
-  const pid='pub_'+currentUser.uid.slice(0,8)+'_'+Date.now();
-  const pub={id:pid,title:qz.title,emoji:qz.emoji||'🎯',questions:stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
-  try{await dbSet('public_quizzes/'+pid,pub);toast('🌐 Veröffentlicht!','var(--green)');}
-  catch(e){toast('Fehler: '+e.message,'var(--red)');}
 }
 async function deleteQuiz(qid){
-  const _qidDel=qid;
   kwizConfirm({
     icon:'🗑',title:'Quiz löschen?',
     body:'Das Quiz wird dauerhaft gelöscht und kann nicht wiederhergestellt werden.',
     confirmLabel:'🗑 Löschen',confirmClass:'btn-red',
     onConfirm:async()=>{
       try{
-        await dbSet('users/'+currentUser.uid+'/quizzes/'+_qidDel,null);
+        await dbSet('users/'+currentUser.uid+'/quizzes/'+qid,null);
         toast('Quiz gelöscht','var(--orange)');loadMyQuizzes();updateMyQuizzesDesc();
       }catch(e){toast('Fehler: '+e.message,'var(--red)');}
     }
   });
-  return; // async handled in callback
-  try{
-    const {ref,set}=window._fb;
-    await set(ref(fbDb,`users/${currentUser.uid}/quizzes/${qid}`),null);
-    toast('Quiz gelöscht','var(--orange)');loadMyQuizzes();updateMyQuizzesDesc();
-  }catch(e){toast('Fehler: '+e.message,'var(--red)');}
 }
 function goCreateQuiz(){
   currentEditId=null;
@@ -1338,40 +1536,67 @@ function addProQuestion(type){
   setTimeout(()=>document.querySelectorAll('.q-card')[editorQs.length-1]?.scrollIntoView({behavior:'smooth',block:'center'}),60);
 }
 function guardedAddPro(type){
-  if(!isPro){openProModal();return;}
+  if(!isPro&&!isMax){openProModal();return;}
   addProQuestion(type);
+}
+function guardedAddMax(type){
+  if(!isMax){openMaxModal();return;}
+  addMaxQuestion(type);
+}
+function addMaxQuestion(type){
+  if(type==='mc6') editorQs.push({type:'mc6',q:'',answers:['','','','','',''],correct:0,time:20});
+  else if(type==='ranking') editorQs.push({type:'ranking',q:'',items:['','','',''],time:30});
+  renderEditor();
+  setTimeout(()=>document.querySelectorAll('.q-card')[editorQs.length-1]?.scrollIntoView({behavior:'smooth',block:'center'}),60);
 }
 function delQ(i){editorQs.splice(i,1);renderEditor();}
 function setCorrect(qi,ai){editorQs[qi].correct=ai;renderEditor();}
 function setTime(qi,t){editorQs[qi].time=t;renderEditor();}
 
+// ─── FIX 1: Image upload helper — must be a real function, not template string ───
+function renderImgEditor(q, i) {
+  const val = q.image || '';
+  const hasImg = !!val;
+  return '<div style="margin-top:12px">'
+    + '<div class="lbl" style="margin-bottom:6px">🖼️ Bild-URL <span style="font-weight:400;color:var(--muted)">(optional)</span></div>'
+    + '<div class="img-url-row">'
+    + '<input class="input" id="imgUrlInput_' + i + '" placeholder="https://beispiel.de/bild.jpg" value="' + esc(val) + '" oninput="setImageUrl(' + i + ',this.value)">'
+    + (hasImg ? '<button class="btn btn-ghost btn-xs" style="flex-shrink:0;white-space:nowrap" onclick="removeImage(' + i + ')">✕</button>' : '')
+    + '</div>'
+    + '<div id="imgPreview_' + i + '" style="' + (hasImg ? '' : 'display:none') + '">'
+    + '<div class="img-preview" style="margin-top:8px">'
+    + '<img src="' + esc(val) + '" alt="Vorschau" onload="imgUrlOk(' + i + ')" onerror="imgUrlFail(' + i + ')">'
+    + '</div></div>'
+    + '<div class="img-err" id="imgErr_' + i + '" style="display:none"></div>'
+    + '</div>';
+}
+
 function renderEditor(){
   const list=document.getElementById('questionList');
   if(!list) return;
   if(!editorQs.length){list.innerHTML='<p class="muted" style="text-align:center;margin:20px 0">Noch keine Elemente. Wähle einen Typ unten.</p>';return;}
+
+  // ─── FIX 2: Time options now include 45s and 60s (MAX) ───
+  const TIME_OPTS = [10, 15, 20, 30, 45, 60];
+
   list.innerHTML=editorQs.map((q,i)=>{
     const type=q.type||'mc';
-    const lblMap={mc:'Multiple Choice',tf:'Wahr / Falsch',info:'Infofolie',mc_multi:'Mehrfachauswahl',estimate:'Schätzfrage',input:'Freitexteingabe',slider:'Schieberegler'};
-    const clsMap={mc:'type-mc',tf:'type-tf',info:'type-info',mc_multi:'type-mc_multi',estimate:'type-estimate',input:'type-input',slider:'type-slider'};
+    const lblMap={mc:'Multiple Choice',tf:'Wahr / Falsch',info:'Infofolie',mc_multi:'Mehrfachauswahl',estimate:'Schätzfrage',input:'Freitexteingabe',slider:'Schieberegler',mc6:'6 Antworten',ranking:'Reihenfolge'};
+    const clsMap={mc:'type-mc',tf:'type-tf',info:'type-info',mc_multi:'type-mc_multi',estimate:'type-estimate',input:'type-input',slider:'type-slider',mc6:'type-mc6',ranking:'type-ranking'};
     const lbl=lblMap[type]||'Frage'; const cls=clsMap[type]||'type-mc';
-    const to=[10,15,20,30].map(t=>`<button class="time-opt ${q.time===t?'sel':''}" onclick="setTime(${i},${t})">${t}s</button>`).join('');
+    const to = TIME_OPTS.map(t=>`<button class="time-opt ${q.time===t?'sel':''}" onclick="setTime(${i},${t})">${t=== 60?'60s MAX':t+'s'}</button>`).join('');
     let c='';
     if(type==='mc'){
+      // FIX 1: call renderImgEditor() as a real function call, not template literal
       c=`<div class="lbl">Frage</div><input class="input" placeholder="Deine Frage..." value="${esc(q.q)}" oninput="editorQs[${i}].q=this.value">
       <div class="ans-grid-editor mt8">${q.answers.map((a,j)=>`<div class="ans-item">
         <div class="ans-shape ${q.correct===j?'correct':''}" style="background:${ANS_COLORS[j]}" onclick="setCorrect(${i},${j})">${SHAPES[j]}</div>
         <input class="input" style="flex:1;padding:10px 12px;font-size:14px" placeholder="Antwort ${j+1}..." value="${esc(a)}" oninput="editorQs[${i}].answers[${j}]=this.value">
       </div>`).join('')}</div>
       <p style="font-size:11px;color:var(--muted);margin-top:10px">Symbol anklicken = richtige Antwort (aktuell: <strong>${SHAPES[q.correct]}</strong>)</p>
-      <div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>
-      \${renderImgEditor(q,${i})}`;
+      <div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>`
+      + renderImgEditor(q, i);
     } else if(type==='mc_multi'){
-      // toggle correct answers
-      const toggleCorrect=(i,j)=>{
-        const idx=editorQs[i].correct.indexOf(j);
-        if(idx>=0) editorQs[i].correct.splice(idx,1); else editorQs[i].correct.push(j);
-        renderEditor();
-      };
       c=`<div class="lbl">Frage <span style="font-size:10px;color:var(--purple);margin-left:4px">☑️ Mehrere richtige Antworten möglich</span></div>
       <input class="input" placeholder="Deine Frage mit mehreren richtigen Antworten..." value="${esc(q.q)}" oninput="editorQs[${i}].q=this.value">
       <div class="ans-grid-editor mt8">${q.answers.map((a,j)=>{
@@ -1388,8 +1613,8 @@ function renderEditor(){
       <div style="display:flex;gap:10px;margin-top:12px">
         <button onclick="setCorrect(${i},1)" style="flex:1;padding:10px;border-radius:10px;border:2px solid ${q.correct===1?'#00d68f':'rgba(255,255,255,.15)'};background:${q.correct===1?'rgba(0,214,143,.15)':'rgba(255,255,255,.04)'};color:${q.correct===1?'#00d68f':'var(--text)'};font-family:Nunito,sans-serif;font-weight:800;font-size:14px;cursor:pointer">✅ WAHR</button>
         <button onclick="setCorrect(${i},0)" style="flex:1;padding:10px;border-radius:10px;border:2px solid ${q.correct===0?'#ff3b5c':'rgba(255,255,255,.15)'};background:${q.correct===0?'rgba(255,59,92,.15)':'rgba(255,255,255,.04)'};color:${q.correct===0?'#ff3b5c':'var(--text)'};font-family:Nunito,sans-serif;font-weight:800;font-size:14px;cursor:pointer">❌ FALSCH</button>
-      </div><div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>
-      \${renderImgEditor(q,${i})}`;
+      </div><div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>`
+      + renderImgEditor(q, i);
     } else if(type==='info'){
       c=`<div class="lbl">Emoji</div><input class="input" value="${esc(q.icon||'💡')}" maxlength="4" style="font-size:22px;width:80px" oninput="editorQs[${i}].icon=this.value">
       <div class="lbl mt8">Titel</div><input class="input" placeholder="Folientitel..." value="${esc(q.title)}" oninput="editorQs[${i}].title=this.value">
@@ -1424,6 +1649,25 @@ function renderEditor(){
         <div><div class="lbl">Min</div><input class="input" type="number" value="${q.min!=null?q.min:0}" oninput="editorQs[${i}].min=+this.value"></div>
         <div><div class="lbl">Max</div><input class="input" type="number" value="${q.max!=null?q.max:100}" oninput="editorQs[${i}].max=+this.value"></div>
       </div>
+      <div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>`;
+    } else if(type==='mc6'){
+      c=`<div style="background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.25);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--max-cyan);font-weight:700">🚀 MAX-FRAGETYP: 6 Antwortmöglichkeiten – mehr Auswahl, mehr Spannung!</div>
+      <div class="lbl">Frage</div><input class="input" placeholder="Deine Frage..." value="${esc(q.q)}" oninput="editorQs[${i}].q=this.value">
+      <div class="ans-grid-editor mt8">${(q.answers||['','','','','','']).map((a,j)=>`<div class="ans-item">
+        <div class="ans-shape ${q.correct===j?'correct':''}" style="background:${ANS_COLORS[j]}" onclick="setCorrect(${i},${j})">${SHAPES[j]}</div>
+        <input class="input" style="flex:1;padding:10px 12px;font-size:14px" placeholder="Antwort ${j+1}..." value="${esc(a)}" oninput="editorQs[${i}].answers[${j}]=this.value">
+      </div>`).join('')}</div>
+      <p style="font-size:11px;color:var(--muted);margin-top:10px">Symbol anklicken = richtige Antwort (aktuell: <strong>${SHAPES[q.correct||0]}</strong>)</p>
+      <div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>`
+      + renderImgEditor(q, i);
+    } else if(type==='ranking'){
+      c=`<div style="background:rgba(255,45,120,.06);border:1px solid rgba(255,45,120,.25);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#ff2d78;font-weight:700">🚀 MAX-FRAGETYP: Spieler ordnen die Elemente in die richtige Reihenfolge.</div>
+      <div class="lbl">Frage / Aufgabe</div><input class="input" placeholder="Bringe in die richtige Reihenfolge..." value="${esc(q.q)}" oninput="editorQs[${i}].q=this.value">
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">${(q.items||['','','','']).map((item,j)=>`<div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;background:linear-gradient(135deg,#00e5ff,#ff2d78);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0;color:#fff">${j+1}</div>
+        <input class="input" style="flex:1;padding:10px 12px;font-size:14px" placeholder="Position ${j+1}..." value="${esc(item)}" oninput="editorQs[${i}].items[${j}]=this.value">
+      </div>`).join('')}</div>
+      <p style="font-size:11px;color:var(--muted);margin-top:10px">Die eingegebene Reihenfolge (1→4) ist die korrekte Lösung.</p>
       <div class="time-sel"><span style="font-size:12px;color:var(--muted);font-weight:700">Zeit:</span>${to}</div>`;
     }
     return `<div class="q-card"><div class="q-card-hdr"><div class="q-num">${i+1}</div><span class="q-type-badge ${cls}">${lbl}</span><h3 style="flex:1"></h3><button class="del-q" onclick="delQ(${i})">🗑</button></div>${c}</div>`;
@@ -1573,7 +1817,7 @@ async function loadSoloQuizzes(){
         +'<button class="btn btn-green" onclick="goCreateQuiz()" style="width:auto;padding:12px 32px">&#x270F;&#xFE0F; Quiz erstellen</button></div>';
       return;
     }
-    const typeIcons={mc:'&#x1F535;',tf:'&#x2705;',info:'&#x1F4CA;',mc_multi:'&#x2611;&#xFE0F;',estimate:'&#x1F3AF;',input:'&#x2328;&#xFE0F;',slider:'&#x1F39A;&#xFE0F;'};
+    const typeIcons={mc:'&#x1F535;',tf:'&#x2705;',info:'&#x1F4CA;',mc_multi:'&#x2611;&#xFE0F;',estimate:'&#x1F3AF;',input:'&#x2328;&#xFE0F;',slider:'&#x1F39A;&#xFE0F;',mc6:'&#x2B20;',ranking:'&#x1F3C6;'};
     const quizzes=Object.values(data).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
     list.innerHTML=quizzes.map(qz=>{
       const qc=(qz.questions||[]).filter(q=>q.type!=='info').length;
@@ -1591,7 +1835,7 @@ async function loadSoloQuizzes(){
         +'<div class="quiz-lib-meta">'+qc+' Frage'+(qc!==1?'n':'')+' '+typeStr+(dt?' &middot; '+dt:'')+'</div>'
         +'</div>'
         +'<button class="btn btn-green btn-xs" style="flex-shrink:0"'
-        +' onclick="event.stopPropagation();startSoloById(this.closest(\'.quiz-lib-item\')">'
+        +' onclick="event.stopPropagation();startSoloById(this.closest(\'.quiz-lib-item\'))">'
         +'&#x25B6; Spielen</button>'
         +'</div>';
     }).join('');
@@ -1615,7 +1859,37 @@ async function startSoloWithQuiz(qid){
   S.code=code;S.role='solo';S.name=name;S.score=0;S.streak=0;S.qIdx=0;S.lastPhase=null;
   const players={};players[name]={name:name,score:0,streak:0,correct:0};
   await dbSet(rp(code),{code:code,title:'Solo',questions:questions,players:players,phase:'question',currentQ:0,questionStartTime:Date.now(),answers:{}});
-  showQuestion(0,'player');listenAsPlayer();
+  showQuestion(0,'player');
+  // FIX 3: For solo, listen for DB changes so leaderboard/end phases trigger correctly
+  listenAsPlayer();
+}
+
+// ─── FIX 3: Solo navigation helpers ──────────
+// Called by "Weiter →" on player reveal screen when in solo mode
+async function soloNextFromReveal(){
+  const room=await dbGet(rp());if(!room) return;
+  // Go to leaderboard first (same as host flow)
+  await dbUpdate(rp(),{phase:'leaderboard'});
+  showLeaderboard(room);
+}
+
+// Called by "Weiter →" on player info slide in solo mode
+async function soloInfoNext(){
+  const room=await dbGet(rp());if(!room) return;
+  const next=room.currentQ+1;
+  if(next>=room.questions.length){
+    await dbUpdate(rp(),{phase:'end'});showEnd(room);
+  } else {
+    S.qIdx=next;
+    const nq=room.questions[next];
+    if(nq.type==='info'){
+      await dbUpdate(rp(),{currentQ:next,phase:'info',questionStartTime:Date.now()});
+      showPlayerInfoSlide({...room,currentQ:next});
+    } else {
+      await dbUpdate(rp(),{currentQ:next,phase:'question',questionStartTime:Date.now(),answers:{}});
+      showQuestion(next,'player');
+    }
+  }
 }
 
 // ─── QUESTION DISPLAY ───────────────────────
@@ -1627,11 +1901,12 @@ async function showQuestion(qIdx,mode){
   multiSelected=[];
   const total=room.questions.length,pct=(qIdx/total)*100;
   const isTF=q.type==='tf',isEstimate=q.type==='estimate',isInput=q.type==='input',isSlider=q.type==='slider';
+  const isMc6=q.type==='mc6',isRanking=q.type==='ranking';
 
   if(mode==='host'){
     document.getElementById('hqNum').textContent=`F ${qIdx+1}/${total}`;
     document.getElementById('hqProg').style.width=pct+'%';
-    let meta=isTF?'WAHR/FALSCH':isEstimate?'SCHÄTZFRAGE':isInput?'FREITEXTEINGABE':isSlider?'SCHIEBEREGLER':'FRAGE';
+    let meta=isTF?'WAHR/FALSCH':isEstimate?'SCHÄTZFRAGE':isInput?'FREITEXTEINGABE':isSlider?'SCHIEBEREGLER':isMc6?'6 ANTWORTEN':isRanking?'REIHENFOLGE':'FRAGE';
     document.getElementById('hqMeta').textContent=`${meta} ${qIdx+1} VON ${total}`;
     document.getElementById('hqText').textContent=q.q;
     const existingHImg=document.getElementById('hqImageWrap');if(existingHImg)existingHImg.remove();
@@ -1644,6 +1919,8 @@ async function showQuestion(qIdx,mode){
       <p style="color:var(--muted);font-size:14px;font-weight:700">Spieler geben ihre Antwort ein</p>
       ${isEstimate?`<p style="color:var(--yellow);font-size:13px;margin-top:4px">Bereich: ${q.min} – ${q.max} ${q.unit||''}</p>`:''}
     </div>`;
+    else if(isMc6) ansHtml=`<div class="ans-play-grid" style="grid-template-columns:1fr 1fr 1fr">`+(q.answers||[]).map((a,i)=>`<button class="ans-play-btn" data-c="${i}" disabled><span class="shape">${SHAPES[i]}</span><span>${esc(a)}</span></button>`).join('')+`</div>`;
+    else if(isRanking) ansHtml=`<div style="display:flex;flex-direction:column;gap:8px;max-width:400px;margin:0 auto">`+(q.items||[]).map((item,i)=>`<div style="display:flex;align-items:center;gap:10px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);border-radius:12px;padding:10px 14px"><span style="width:24px;height:24px;background:linear-gradient(135deg,#00e5ff,#ff2d78);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#fff;flex-shrink:0">${i+1}</span><span style="font-weight:700">${esc(item)}</span></div>`).join('')+`</div>`;
     else ansHtml=`<div class="ans-play-grid">`+q.answers.map((a,i)=>`<button class="ans-play-btn" data-c="${i}" disabled><span class="shape">${SHAPES[i]}</span><span>${esc(a)}</span></button>`).join('')+`</div>`;
     document.getElementById('hqAnswers').innerHTML=ansHtml;
     document.getElementById('hqCount').textContent='';
@@ -1651,14 +1928,11 @@ async function showQuestion(qIdx,mode){
   } else {
     document.getElementById('pqNum').textContent=`F ${qIdx+1}/${total}`;
     document.getElementById('pqProg').style.width=pct+'%';
-    let meta=isTF?'WAHR/FALSCH':isEstimate?'SCHÄTZFRAGE':isInput?'FREITEXTEINGABE':isSlider?'SCHIEBEREGLER':'FRAGE';
+    let meta=isTF?'WAHR/FALSCH':isEstimate?'SCHÄTZFRAGE':isInput?'FREITEXTEINGABE':isSlider?'SCHIEBEREGLER':isMc6?'6 ANTWORTEN':isRanking?'REIHENFOLGE':'FRAGE';
     document.getElementById('pqMeta').textContent=`${meta} ${qIdx+1} VON ${total}`;
     document.getElementById('pqText').textContent=q.q;
-    // Show image if present
-    let imgHtml='';
-    if(q.image){imgHtml='<div class="q-image-wrap" style="margin-bottom:16px"><img src="'+q.image+'" alt="Fragebild"></div>';}
     const existingImg=document.getElementById('pqImageWrap');if(existingImg)existingImg.remove();
-    if(q.image){const wrap=document.createElement('div');wrap.id='pqImageWrap';wrap.innerHTML=imgHtml;const bubble=document.querySelector('#playerQuestion .q-bubble');if(bubble)bubble.after(wrap);}
+    if(q.image){const wrap=document.createElement('div');wrap.id='pqImageWrap';wrap.className='q-image-wrap';wrap.style.marginBottom='16px';wrap.innerHTML='<img src="'+q.image+'" alt="Fragebild">';const bubble=document.querySelector('#playerQuestion .q-bubble');if(bubble)bubble.after(wrap);}
     document.getElementById('pqScore').textContent='⭐ '+S.score.toLocaleString();
     let ansHtml='';
     if(isTF){
@@ -1693,12 +1967,24 @@ async function showQuestion(qIdx,mode){
     } else if(q.type==='mc_multi'){
       ansHtml='<div class="ans-play-grid">'+q.answers.map((a,i)=>'<button class="ans-play-btn" id="mca'+i+'" data-c="'+i+'" onclick="toggleMultiAnswer('+i+','+qIdx+')"><span class="shape">'+SHAPES[i]+'</span><span style="flex:1">'+esc(a)+'</span><span class="check-icon">✓</span></button>').join('')+'</div>'+
         '<div class="multi-submit-wrap"><button class="multi-submit-btn" id="multiSubmitBtn" onclick="submitMultiAnswer('+qIdx+')" disabled>☑️ Auswahl bestätigen</button></div>';
+    } else if(isMc6){
+      ansHtml=`<div class="ans-play-grid" style="grid-template-columns:1fr 1fr 1fr">`+(q.answers||[]).map((a,i)=>`<button class="ans-play-btn" data-c="${i}" onclick="submitAnswer(${i},${qIdx})"><span class="shape">${SHAPES[i]}</span><span>${esc(a)}</span></button>`).join('')+`</div>`;
+    } else if(isRanking){
+      // Ranking: shuffle items for player, they tap in order
+      const shuffled=(q.items||[]).map((item,origIdx)=>({item,origIdx})).sort(()=>Math.random()-.5);
+      const rankOrder=[];
+      ansHtml=`<div id="rankingWrap" style="display:flex;flex-direction:column;gap:8px;max-width:460px;width:100%">
+        <p style="font-size:13px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">Tippe in der richtigen Reihenfolge an (1 = erstes)</p>
+        ${shuffled.map((obj,si)=>`<button id="rankBtn_${si}" class="ans-play-btn" data-c="${obj.origIdx}" style="background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.25);color:#fff;justify-content:flex-start" onclick="tapRankItem(${si},${obj.origIdx},${qIdx},${(q.items||[]).length})">
+          <span id="rankNum_${si}" style="width:26px;height:26px;background:rgba(255,255,255,.15);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0"> </span>
+          <span>${esc(obj.item)}</span>
+        </button>`).join('')}
+      </div>`;
     } else {
       ansHtml=`<div class="ans-play-grid">`+q.answers.map((a,i)=>`<button class="ans-play-btn" data-c="${i}" onclick="submitAnswer(${i},${qIdx})"><span class="shape">${SHAPES[i]}</span><span>${esc(a)}</span></button>`).join('')+`</div>`;
     }
     document.getElementById('pqAnswers').innerHTML=ansHtml;
     showScreen('playerQuestion');S.startTs=Date.now();startTimer(q.time,'player',qIdx);
-    // init slider pct
     if(isSlider) setTimeout(()=>{const sl=document.getElementById('sliderInput');if(sl)updateSliderDisplay(sl,q.min,q.max,q.unit||'');},50);
   }
 }
@@ -1707,6 +1993,24 @@ function updateSliderDisplay(el,min,max,unit){
   const v=+el.value;const pct=((v-min)/(max-min)*100).toFixed(1);
   el.style.setProperty('--pct',pct+'%');
   const d=document.getElementById('sliderVal');if(d)d.textContent=v+(unit?' '+unit:'');
+}
+
+// Ranking question: tap items in order
+const _rankOrder=[];
+function tapRankItem(shuffleIdx,origIdx,qIdx,total){
+  const btn=document.getElementById('rankBtn_'+shuffleIdx);
+  const numEl=document.getElementById('rankNum_'+shuffleIdx);
+  if(!btn||btn.disabled) return;
+  _rankOrder.push(origIdx);
+  const pos=_rankOrder.length;
+  numEl.textContent=pos;
+  btn.disabled=true;
+  btn.style.background='linear-gradient(135deg,rgba(0,229,255,.3),rgba(255,45,120,.2))';
+  btn.style.border='1px solid rgba(0,229,255,.5)';
+  if(_rankOrder.length===total){
+    // submit ranking as comma-joined origIdx order
+    submitAnswer(_rankOrder.join(','),qIdx);
+  }
 }
 
 function showHostInfoSlide(q,qIdx,total){
@@ -1719,6 +2023,7 @@ function showHostInfoSlide(q,qIdx,total){
   showScreen('hostInfoSlide');
 }
 async function hostInfoNext(){clearInterval(S.timerIv);await nextQuestion();}
+
 function showPlayerInfoSlide(room){
   clearInterval(S.timerIv);const q=room.questions[room.currentQ],total=room.questions.length;
   document.getElementById('piNum').textContent=`${room.currentQ+1}/${total}`;
@@ -1726,6 +2031,12 @@ function showPlayerInfoSlide(room){
   document.getElementById('piIcon').textContent=q.icon||'💡';
   document.getElementById('piTitle').textContent=q.title||'Info';
   document.getElementById('piBody').innerHTML=q.body||'';
+  // FIX 3: In solo mode show "Weiter" button, in multiplayer show wait message
+  const isSolo=S.role==='solo';
+  const waitMsg=document.getElementById('piWaitMsg');
+  const soloNext=document.getElementById('piSoloNext');
+  if(waitMsg) waitMsg.style.display=isSolo?'none':'';
+  if(soloNext) soloNext.style.display=isSolo?'':'none';
   showScreen('playerInfoSlide');
 }
 
@@ -1749,7 +2060,6 @@ function startTimer(secs,mode,qIdx){
 }
 
 // ─── ANSWERING ──────────────────────────────
-// Multi-select state
 let multiSelected=[];
 function toggleMultiAnswer(idx,qIdx){
   if(S.selected!==null) return;
@@ -1828,16 +2138,23 @@ async function recordAnswer(ansVal,qIdx){
     } else if(partial>0&&wrong===0){
       pts=Math.round(300*(partial/correctSet.size));
     } else {pts=0;}
-  } else if(type==='mc'||type==='tf'){
-    ok=ansVal===q.correct;
+  } else if(type==='mc'||type==='tf'||type==='mc6'){
+    ok=type==='mc6'?+ansVal===q.correct:ansVal===q.correct;
     const tBonus=ok?Math.floor(Math.max(0,(q.time-elapsed)/q.time)*500):0;
     const sBonus=(ok&&S.streak>=2)?100:0;
     pts=ok?500+tBonus+sBonus:0;
+  } else if(type==='ranking'){
+    // Compare submitted order (comma-joined origIdx) to correct order (0,1,2,...n-1)
+    const submitted=String(ansVal).split(',').map(Number);
+    const correctOrder=(q.items||[]).map((_,i)=>i);
+    const matches=submitted.filter((v,i)=>v===correctOrder[i]).length;
+    ok=matches===correctOrder.length;
+    pts=Math.round(500*(matches/correctOrder.length));
   } else if(type==='estimate'||type==='slider'){
     const diff=Math.abs(ansVal-q.correctValue);
     const range=q.max-q.min||1;
     const pct=diff/range;
-    ok=pct<=0.05; // within 5% of range = "correct"
+    ok=pct<=0.05;
     proximity=pct;
     const closeness=Math.max(0,1-pct);
     pts=Math.round(closeness*500)+Math.floor(Math.max(0,(q.time-elapsed)/q.time)*200);
@@ -1850,7 +2167,7 @@ async function recordAnswer(ansVal,qIdx){
     pts=ok?500+tBonus:0;
   }
 
-  if(type==='mc'||type==='tf'||type==='input'){
+  if(type==='mc'||type==='tf'||type==='input'||type==='mc6'){
     if(ok){S.streak++;S.score+=pts;}else S.streak=0;
   } else {
     S.score+=pts;S.streak=0;
@@ -1864,7 +2181,18 @@ async function recordAnswer(ansVal,qIdx){
   if(ok) patches[`rooms/${S.code}/players/${name}/correct`]=prevC+1;
   const {ref,update}=window._fb;
   await update(ref(fbDb,'/'),patches);
-  if(S.role==='solo'){clearInterval(S.timerIv);setTimeout(async()=>{const r=await dbGet(rp());if(r){await dbUpdate(rp(),{phase:'reveal'});showPlayerReveal(r);}},700);}
+
+  // FIX 3: In solo mode, trigger reveal after answer (no need to wait for all players)
+  if(S.role==='solo'){
+    clearInterval(S.timerIv);
+    setTimeout(async()=>{
+      const r=await dbGet(rp());
+      if(r){
+        await dbUpdate(rp(),{phase:'reveal'});
+        showPlayerReveal(r);
+      }
+    },600);
+  }
 }
 
 // ─── REVEAL ─────────────────────────────────
@@ -1877,18 +2205,16 @@ async function showHostReveal(room,qIdx){
   let lbl='';
   if(type==='tf') lbl=q.correct===1?'✅ WAHR':'❌ FALSCH';
   else if(type==='mc') lbl=`${SHAPES[q.correct]} ${esc(q.answers[q.correct])}`;
+  else if(type==='mc6') lbl=`${SHAPES[q.correct]} ${esc((q.answers||[])[q.correct]||'')}`;
   else if(type==='mc_multi') lbl=(q.correct||[]).map(i=>SHAPES[i]+' '+esc(q.answers[i])).join(' &amp; ');
   else if(type==='estimate'||type==='slider') lbl=`${q.correctValue} ${q.unit||''}`;
   else if(type==='input') lbl=esc(q.correctText);
-
-  document.getElementById('revealCorrect').innerHTML=`✅ Richtige Antwort: <strong>${lbl}</strong>`;
+  else if(type==='ranking') lbl=(q.items||[]).map((item,i)=>`<strong>${i+1}.</strong> ${esc(item)}`).join(' → ');
   document.getElementById('revealStats').textContent=`${cOk} von ${tot} Spieler${tot!==1?'n':''} lagen richtig`;
 
-  // For estimate/slider: show all guesses
   const estimDiv=document.getElementById('estimateRevealHost');
   if((type==='estimate'||type==='slider')&&tot>0){
     const sorted=Object.entries(room.answers||{}).sort((a,b)=>a[1].proximity-b[1].proximity);
-    const range=q.max-q.min||1;
     const bars=sorted.map(([name,ans],idx)=>{
       const val=ans.answer;
       const closeness=Math.max(0,1-(ans.proximity||0));
@@ -1902,7 +2228,6 @@ async function showHostReveal(room,qIdx){
       </div>`;
     }).join('');
     estimDiv.innerHTML=`<div class="estimate-bar-container" style="margin-bottom:16px">${bars}</div>`;
-    setTimeout(()=>{},50);
   } else {
     estimDiv.innerHTML='';
   }
@@ -1917,8 +2242,10 @@ function showPlayerReveal(room){
   let lbl='';
   if(type==='tf') lbl=q.correct===1?'✅ WAHR':'❌ FALSCH';
   else if(type==='mc') lbl=`${SHAPES[q.correct]} ${esc(q.answers[q.correct])}`;
+  else if(type==='mc6') lbl=`${SHAPES[q.correct]} ${esc((q.answers||[])[q.correct]||'')}`;
   else if(type==='estimate'||type==='slider') lbl=`${q.correctValue} ${q.unit||''}`;
   else if(type==='input') lbl=esc(q.correctText);
+  else if(type==='ranking') lbl=(q.items||[]).map((item,i)=>`${i+1}. ${esc(item)}`).join(' → ');
 
   document.getElementById('prCorrect').innerHTML=`Richtige Antwort: <strong>${lbl}</strong>`;
 
@@ -1959,6 +2286,14 @@ function showPlayerReveal(room){
     } else document.getElementById('prPts').style.display='none';
   }
   document.getElementById('pqScore').textContent='⭐ '+S.score.toLocaleString();
+
+  // FIX 3: Show solo "Weiter" button or multiplayer wait message
+  const isSolo=S.role==='solo';
+  const waitMsg=document.getElementById('prWaitMsg');
+  const soloBtn=document.getElementById('prSoloNextBtn');
+  if(waitMsg) waitMsg.style.display=isSolo?'none':'';
+  if(soloBtn) soloBtn.style.display=isSolo?'':'none';
+
   showScreen('playerReveal');
   if(ok) setTimeout(()=>launchConfetti(1800),200);
 }
@@ -1966,7 +2301,9 @@ function showPlayerReveal(room){
 // ─── LEADERBOARD ────────────────────────────
 function showLeaderboard(room){
   const players=Object.values(room.players||{}).sort((a,b)=>b.score-a.score);
-  const isLast=room.currentQ>=room.questions.length-1,isHost=S.role==='host'||S.role==='solo';
+  const isLast=room.currentQ>=room.questions.length-1;
+  // FIX 3: Solo mode acts as its own host for leaderboard navigation
+  const isHost=S.role==='host'||S.role==='solo';
   const btn=document.getElementById('lbBtn');btn.textContent=isLast?'🏆 Endstand':'Weiter →';btn.style.display=isHost?'':'none';
   const icons=['🥇','🥈','🥉'],cols=['gold','silver','bronze'];
   document.getElementById('lbList').innerHTML=players.map((p,i)=>`
@@ -2080,12 +2417,15 @@ function launchConfetti(duration=3500){
   requestAnimationFrame(frame);
 }
 
-// ─── IMAGE UPLOAD ─────────────────────────────
-function setImageUrl(qi,url){
+// ─── IMAGE UPLOAD helpers ─────────────────────────────
+// FIX 1: These are now standalone functions (not broken template literal calls)
+function setImageUrl(qi, url){
   const trimmed=(url||'').trim();
-  editorQs[qi].image=trimmed||undefined;
-  if(!trimmed){delete editorQs[qi].image;}
-  // live preview without full re-render
+  if(!trimmed){
+    delete editorQs[qi].image;
+  } else {
+    editorQs[qi].image=trimmed;
+  }
   const prev=document.getElementById('imgPreview_'+qi);
   const err=document.getElementById('imgErr_'+qi);
   if(!trimmed){if(prev)prev.style.display='none';if(err)err.style.display='none';return;}
@@ -2105,6 +2445,8 @@ function removeImage(qi){
   if(inp) inp.value='';
   const prev=document.getElementById('imgPreview_'+qi);
   if(prev) prev.style.display='none';
+  const err=document.getElementById('imgErr_'+qi);
+  if(err) err.style.display='none';
 }
 function imgUrlOk(i){
   const prev=document.getElementById('imgPreview_'+i);
@@ -2117,23 +2459,6 @@ function imgUrlFail(i){
   const err=document.getElementById('imgErr_'+i);
   if(prev) prev.style.display='none';
   if(err){err.textContent='URL nicht erreichbar oder kein Bild.';err.style.display='';}
-}
-
-function renderImgEditor(q,i){
-  const val=q.image||'';
-  const hasImg=!!val;
-  return '<div style="margin-top:12px">'+
-    '<div class="lbl" style="margin-bottom:6px">🖼️ Bild-URL <span style="font-weight:400;color:var(--muted)">(optional)</span></div>'+
-    '<div class="img-url-row">'+
-    '<input class="input" id="imgUrlInput_'+i+'" placeholder="https://beispiel.de/bild.jpg" value="'+esc(val)+'" oninput="setImageUrl('+i+',this.value)">'+
-    (hasImg?'<button class="btn btn-ghost btn-xs" style="flex-shrink:0;white-space:nowrap" onclick="removeImage('+i+')">✕</button>':'')+
-    '</div>'+
-    '<div id="imgPreview_'+i+'" style="'+(hasImg?'':'display:none')+'">'+
-    '<div class="img-preview" style="margin-top:8px">'+
-    '<img src="'+esc(val)+'" alt="Vorschau" id="imgPreviewImg_'+i+'" onload="imgUrlOk('+i+')" onerror="imgUrlFail('+i+')">'+
-    '</div></div>'+
-    '<div class="img-err" id="imgErr_'+i+'" style="display:none"></div>'+
-    '</div>';
 }
 
 // ─── PUBLIC LIBRARY ───────────────────────────
@@ -2158,7 +2483,7 @@ async function loadPublicLib(){
 function renderPublicLib(quizzes){
   const list=document.getElementById('pubLibList');
   if(!quizzes.length){list.innerHTML='<p class="muted" style="text-align:center;margin-top:20px">Keine Ergebnisse gefunden.</p>';return;}
-  const typeIcons={mc:'🔵',tf:'✅',info:'📊',mc_multi:'☑️',estimate:'🎯',input:'⌨️',slider:'🎚️'};
+  const typeIcons={mc:'🔵',tf:'✅',info:'📊',mc_multi:'☑️',estimate:'🎯',input:'⌨️',slider:'🎚️',mc6:'⬠',ranking:'🏆'};
   list.innerHTML=quizzes.map(qz=>{
     const qc=(qz.questions||[]).filter(q=>q.type!=='info').length;
     const types=[...new Set((qz.questions||[]).map(q=>q.type).filter(t=>t!=='info'))];
@@ -2198,14 +2523,14 @@ async function publishCurrentQuiz(){
   const emoji=document.getElementById('quizEmoji')?.value.trim()||'🎯';
   const valid=editorQs.filter(q=>validateQ(q));
   if(!valid.length){toast('Erst Quiz fertigstellen!','var(--red)');return;}
-  const _title=title,_emoji=emoji,_stripped=stripped;
+  const stripped=valid.map(q=>{const r={...q};delete r.image;return r;});
   kwizConfirm({
     icon:'🌐',title:'Quiz veröffentlichen?',
-    body:'"'+_title+'" wird in der öffentlichen Bibliothek sichtbar. Bilder werden nicht mitgeteilt.',
+    body:'"'+title+'" wird in der öffentlichen Bibliothek sichtbar. Bilder werden nicht mitgeteilt.',
     confirmLabel:'🌐 Veröffentlichen',confirmClass:'btn-green',
     onConfirm:async()=>{
       const qid2='pub_'+(currentUser.uid.slice(0,8))+'_'+Date.now();
-      const pub2={id:qid2,title:_title,emoji:_emoji,questions:_stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
+      const pub2={id:qid2,title,emoji,questions:stripped,authorName:currentUser.displayName||'Anonym',authorId:currentUser.uid,publishedAt:Date.now(),plays:0};
       try{
         await dbSet('public_quizzes/'+qid2,pub2);
         toast('🌐 Quiz veröffentlicht!','var(--green)');
@@ -2214,7 +2539,6 @@ async function publishCurrentQuiz(){
     }
   });
 }
-
 
 function pubCardAction(btn,action){
   const card=btn.closest('.pub-card');
@@ -2244,9 +2568,7 @@ async function playPublicQuiz(safeId){
   const qid=decodeURIComponent(safeId);
   const qz=await dbGet('public_quizzes/'+qid);
   if(!qz){toast('Quiz nicht gefunden!','var(--red)');return;}
-  // increment plays
   try{await dbUpdate('public_quizzes/'+qid,{plays:(qz.plays||0)+1});}catch(e){}
-  // load into editor & host
   document.getElementById('quizTitle').value=qz.title||'';
   document.getElementById('quizEmoji').value=qz.emoji||'🎯';
   editorQs=(qz.questions||[]).map(q=>({...q}));
@@ -2303,12 +2625,14 @@ async function exportResults(){
     questions.filter(q=>q.type!=='info').map((q,i)=>{
       let ans='';
       if(q.type==='mc') ans=q.answers&&q.answers[q.correct]?esc(q.answers[q.correct]):'?';
+      else if(q.type==='mc6') ans=q.answers&&q.answers[q.correct]?esc(q.answers[q.correct]):'?';
       else if(q.type==='tf') ans=q.correct===1?'✅ Wahr':'❌ Falsch';
       else if(q.type==='mc_multi') ans=(q.correct||[]).map(ci=>q.answers&&q.answers[ci]?esc(q.answers[ci]):'?').join(', ');
       else if(q.type==='estimate'||q.type==='slider') ans=(q.correctValue!=null?q.correctValue:'?')+' '+(q.unit||'');
       else if(q.type==='input') ans=esc(q.correctText||'');
+      else if(q.type==='ranking') ans=(q.items||[]).map((item,i)=>`${i+1}. ${esc(item)}`).join(' → ');
       return '<tr><td>'+(i+1)+'</td><td>'+esc(q.q||'')+'</td>'+
-        '<td>'+esc({mc:'Multiple Choice',tf:'Wahr/Falsch',mc_multi:'Mehrfachauswahl',estimate:'Schätzfrage',input:'Freitext',slider:'Schieberegler'}[q.type]||q.type)+'</td>'+
+        '<td>'+esc({mc:'Multiple Choice',tf:'Wahr/Falsch',mc_multi:'Mehrfachauswahl',estimate:'Schätzfrage',input:'Freitext',slider:'Schieberegler',mc6:'6 Antworten',ranking:'Reihenfolge'}[q.type]||q.type)+'</td>'+
         '<td>'+ans+'</td></tr>';
     }).join('')+
     '</table></div></body></html>';
@@ -2320,8 +2644,6 @@ async function exportResults(){
   a.click();URL.revokeObjectURL(url);
   toast('📄 Ergebnisse exportiert!','var(--green)');
 }
-
-
 
 // ─── DIALOG SYSTEM ───────────────────────────
 function kwizConfirm({icon='⚠️',title,body,confirmLabel='Bestätigen',confirmClass='btn-red',cancelLabel='Abbrechen',onConfirm,onCancel}){
@@ -2373,15 +2695,12 @@ updateProUI();
 
 // ─── PWA ────────────────────────────────────
 (function(){
-  // Generate inline SVG icon as data URI
   const svgIcon=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="100" fill="#080817"/><text x="256" y="340" font-size="280" text-anchor="middle" font-family="Arial Black,sans-serif" fill="#ff3b5c">K</text><text x="370" y="200" font-size="140" text-anchor="middle" font-family="Arial Black,sans-serif" fill="#ffcc00">!</text></svg>`;
   const iconDataUri='data:image/svg+xml;base64,'+btoa(svgIcon);
 
-  // Set apple touch icon
   const atIcon=document.getElementById('appleTouchIcon');
   if(atIcon) atIcon.href=iconDataUri;
 
-  // Build manifest as blob
   const manifest={
     name:'KWIZ! Multiplayer Quiz',
     short_name:'KWIZ!',
@@ -2406,7 +2725,6 @@ updateProUI();
   const mLink=document.getElementById('pwaManifest');
   if(mLink) mLink.href=manifestUrl;
 
-  // Service Worker
   if('serviceWorker' in navigator){
     const swCode=`
 const CACHE='kwiz-v1';
@@ -2430,7 +2748,6 @@ self.addEventListener('fetch',e=>{
     navigator.serviceWorker.register(swUrl,{scope:'/'}).catch(()=>{});
   }
 
-  // Install prompt
   let deferredPrompt=null;
   window.addEventListener('beforeinstallprompt',e=>{
     e.preventDefault();deferredPrompt=e;
@@ -2449,7 +2766,6 @@ self.addEventListener('fetch',e=>{
       const{outcome}=await deferredPrompt.userChoice;
       if(outcome==='accepted') deferredPrompt=null;
     } else {
-      // Fallback instructions
       const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
       const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
       if(isIOS||isSafari){
@@ -2471,7 +2787,6 @@ self.addEventListener('fetch',e=>{
     }
   };
 })();
-
 </script>
 </body>
 </html>
