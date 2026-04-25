@@ -1904,6 +1904,7 @@ async function showQuestion(qIdx,mode){
   if(q.type==='info'){mode==='host'?showHostInfoSlide(q,qIdx,room.questions.length):showPlayerInfoSlide(room);return;}
   S.selected=null;
   multiSelected=[];
+  _rankOrder.length=0;
   const total=room.questions.length,pct=(qIdx/total)*100;
   const isTF=q.type==='tf',isEstimate=q.type==='estimate',isInput=q.type==='input',isSlider=q.type==='slider';
   const isMc6=q.type==='mc6',isRanking=q.type==='ranking';
@@ -2325,7 +2326,7 @@ function showLeaderboard(room){
 }
 async function continueFromLb(){
   const room=await dbGet(rp());if(!room) return;
-  if(room.currentQ>=room.questions.length-1){await dbUpdate(rp(),{phase:'end'});showEnd(room);}
+  if(room.currentQ>=room.questions.length-1){await dbUpdate(rp(),{phase:'end'});const endRoom=await dbGet(rp());showEnd(endRoom||room);}
   else await nextQuestion();
 }
 async function nextQuestion(){
@@ -2334,7 +2335,7 @@ async function nextQuestion(){
   // Only redirect to leaderboard from reveal/hostQuestion in real host mode (not solo)
   if(S.role==='host'&&(scr==='revealScreen'||scr==='hostQuestion')){await dbUpdate(rp(),{phase:'leaderboard'});showLeaderboard(room);return;}
   const next=room.currentQ+1;
-  if(next>=room.questions.length){await dbUpdate(rp(),{phase:'end'});showEnd(room);return;}
+  if(next>=room.questions.length){await dbUpdate(rp(),{phase:'end'});const endRoom2=await dbGet(rp());showEnd(endRoom2||room);return;}
   S.qIdx=next;const nq=room.questions[next];
   const pMode=S.role==='player'||S.role==='solo'?'player':'host';
   if(nq.type==='info'){
