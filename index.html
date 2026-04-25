@@ -1753,7 +1753,7 @@ function listenHostPhase(){
     }
   });
 }
-async function doReveal(room){await dbUpdate(rp(),{phase:'reveal'});showHostReveal(room,S.qIdx);}
+async function doReveal(room){await dbUpdate(rp(),{phase:'reveal'});const fresh=await dbGet(rp());showHostReveal(fresh||room,S.qIdx);}
 
 // ─── JOINING ────────────────────────────────
 async function joinRoom(){
@@ -1868,9 +1868,10 @@ async function startSoloWithQuiz(qid){
 // Called by "Weiter →" on player reveal screen when in solo mode
 async function soloNextFromReveal(){
   const room=await dbGet(rp());if(!room) return;
-  // Go to leaderboard first (same as host flow)
   await dbUpdate(rp(),{phase:'leaderboard'});
-  showLeaderboard(room);
+  S.lastPhase='leaderboard'; // prevent DB listener from double-firing
+  const updatedRoom=await dbGet(rp());
+  showLeaderboard(updatedRoom||room);
 }
 
 // Called by "Weiter →" on player info slide in solo mode
@@ -1878,15 +1879,19 @@ async function soloInfoNext(){
   const room=await dbGet(rp());if(!room) return;
   const next=room.currentQ+1;
   if(next>=room.questions.length){
-    await dbUpdate(rp(),{phase:'end'});showEnd(room);
+    await dbUpdate(rp(),{phase:'end'});
+    S.lastPhase='end';
+    const fresh=await dbGet(rp());showEnd(fresh||room);
   } else {
     S.qIdx=next;
     const nq=room.questions[next];
     if(nq.type==='info'){
       await dbUpdate(rp(),{currentQ:next,phase:'info',questionStartTime:Date.now()});
+      S.lastPhase='info'+next;
       showPlayerInfoSlide({...room,currentQ:next});
     } else {
       await dbUpdate(rp(),{currentQ:next,phase:'question',questionStartTime:Date.now(),answers:{}});
+      S.lastPhase='question';S.selected=null;
       showQuestion(next,'player');
     }
   }
@@ -1913,14 +1918,14 @@ async function showQuestion(qIdx,mode){
     if(q.image){const w=document.createElement('div');w.id='hqImageWrap';w.className='q-image-wrap';w.style.marginBottom='16px';w.innerHTML='<img src="'+q.image+'" alt="Fragebild">';const b=document.querySelector('#hostQuestion .q-bubble');if(b)b.after(w);}
     let ansHtml='';
     if(isTF) ansHtml=`<div class="tf-grid"><button class="tf-btn tf-true" disabled><span class="tf-icon">✅</span>WAHR</button><button class="tf-btn tf-false" disabled><span class="tf-icon">❌</span>FALSCH</button></div>`;
-    else if(q.type==='mc_multi') ansHtml='<div class="ans-play-grid">'+q.answers.map((a,i)=>'<button class="ans-play-btn" data-c="'+i+'" disabled><span class="shape">'+SHAPES[i]+'</span><span>'+esc(a)+'</span>'+(q.correct&&q.correct.includes(i)?'<span style="margin-left:auto;font-size:18px">☑️</span>':'')+' </button>').join('')+'</div>';
+    else if(q.type==='mc_multi') ansHtml='<div class="ans-play-grid">'+q.answers.map((a,i)=>'<button class="ans-play-btn" data-c="'+i+'" disabled><span class="shape">'+SHAPES[i]+'</span><span>'+esc(a)+'</span></button>').join('')+'</div>';
     else if(isEstimate||isInput||isSlider) ansHtml=`<div style="text-align:center;padding:16px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;max-width:400px">
       <div style="font-size:40px;margin-bottom:8px">${isEstimate?'🎯':isInput?'⌨️':'🎚️'}</div>
       <p style="color:var(--muted);font-size:14px;font-weight:700">Spieler geben ihre Antwort ein</p>
       ${isEstimate?`<p style="color:var(--yellow);font-size:13px;margin-top:4px">Bereich: ${q.min} – ${q.max} ${q.unit||''}</p>`:''}
     </div>`;
     else if(isMc6) ansHtml=`<div class="ans-play-grid" style="grid-template-columns:1fr 1fr 1fr">`+(q.answers||[]).map((a,i)=>`<button class="ans-play-btn" data-c="${i}" disabled><span class="shape">${SHAPES[i]}</span><span>${esc(a)}</span></button>`).join('')+`</div>`;
-    else if(isRanking) ansHtml=`<div style="display:flex;flex-direction:column;gap:8px;max-width:400px;margin:0 auto">`+(q.items||[]).map((item,i)=>`<div style="display:flex;align-items:center;gap:10px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);border-radius:12px;padding:10px 14px"><span style="width:24px;height:24px;background:linear-gradient(135deg,#00e5ff,#ff2d78);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#fff;flex-shrink:0">${i+1}</span><span style="font-weight:700">${esc(item)}</span></div>`).join('')+`</div>`;
+    else if(isRanking) ansHtml=`<div style="display:flex;flex-direction:column;gap:8px;max-width:400px;margin:0 auto"><p style="font-size:13px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">Spieler ordnen die Elemente ein</p>`+[...(q.items||[])].sort(()=>Math.random()-.5).map((item)=>`<div style="display:flex;align-items:center;gap:10px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);border-radius:12px;padding:10px 14px"><span style="font-weight:700">${esc(item)}</span></div>`).join('')+`</div>`;
     else ansHtml=`<div class="ans-play-grid">`+q.answers.map((a,i)=>`<button class="ans-play-btn" data-c="${i}" disabled><span class="shape">${SHAPES[i]}</span><span>${esc(a)}</span></button>`).join('')+`</div>`;
     document.getElementById('hqAnswers').innerHTML=ansHtml;
     document.getElementById('hqCount').textContent='';
@@ -2182,13 +2187,14 @@ async function recordAnswer(ansVal,qIdx){
   const {ref,update}=window._fb;
   await update(ref(fbDb,'/'),patches);
 
-  // FIX 3: In solo mode, trigger reveal after answer (no need to wait for all players)
+  // In solo mode, trigger reveal after answer (no need to wait for all players)
   if(S.role==='solo'){
     clearInterval(S.timerIv);
     setTimeout(async()=>{
       const r=await dbGet(rp());
       if(r){
         await dbUpdate(rp(),{phase:'reveal'});
+        S.lastPhase='reveal'; // prevent DB listener from firing showPlayerReveal again
         showPlayerReveal(r);
       }
     },600);
@@ -2210,6 +2216,7 @@ async function showHostReveal(room,qIdx){
   else if(type==='estimate'||type==='slider') lbl=`${q.correctValue} ${q.unit||''}`;
   else if(type==='input') lbl=esc(q.correctText);
   else if(type==='ranking') lbl=(q.items||[]).map((item,i)=>`<strong>${i+1}.</strong> ${esc(item)}`).join(' → ');
+  document.getElementById('revealCorrect').innerHTML=lbl||'—';
   document.getElementById('revealStats').textContent=`${cOk} von ${tot} Spieler${tot!==1?'n':''} lagen richtig`;
 
   const estimDiv=document.getElementById('estimateRevealHost');
@@ -2244,6 +2251,7 @@ function showPlayerReveal(room){
   else if(type==='mc') lbl=`${SHAPES[q.correct]} ${esc(q.answers[q.correct])}`;
   else if(type==='mc6') lbl=`${SHAPES[q.correct]} ${esc((q.answers||[])[q.correct]||'')}`;
   else if(type==='estimate'||type==='slider') lbl=`${q.correctValue} ${q.unit||''}`;
+  else if(type==='mc_multi') lbl=(q.correct||[]).map(i=>SHAPES[i]+' '+esc(q.answers[i])).join(' &amp; ');
   else if(type==='input') lbl=esc(q.correctText);
   else if(type==='ranking') lbl=(q.items||[]).map((item,i)=>`${i+1}. ${esc(item)}`).join(' → ');
 
@@ -2323,16 +2331,20 @@ async function continueFromLb(){
 async function nextQuestion(){
   const room=await dbGet(rp());if(!room) return;
   const scr=activeScreen();
-  if(scr==='revealScreen'||scr==='hostQuestion'){await dbUpdate(rp(),{phase:'leaderboard'});showLeaderboard(room);return;}
+  // Only redirect to leaderboard from reveal/hostQuestion in real host mode (not solo)
+  if(S.role==='host'&&(scr==='revealScreen'||scr==='hostQuestion')){await dbUpdate(rp(),{phase:'leaderboard'});showLeaderboard(room);return;}
   const next=room.currentQ+1;
   if(next>=room.questions.length){await dbUpdate(rp(),{phase:'end'});showEnd(room);return;}
   S.qIdx=next;const nq=room.questions[next];
+  const pMode=S.role==='player'||S.role==='solo'?'player':'host';
   if(nq.type==='info'){
     await dbUpdate(rp(),{currentQ:next,phase:'info',questionStartTime:Date.now()});
-    showQuestion(next,S.role==='player'?'player':'host');
+    if(S.role==='solo') S.lastPhase='info'+next;
+    showQuestion(next,pMode);
   } else {
     await dbUpdate(rp(),{currentQ:next,phase:'question',questionStartTime:Date.now(),answers:{}});
-    showQuestion(next,S.role==='player'?'player':'host');
+    if(S.role==='solo'){ S.lastPhase='question';S.selected=null; }
+    showQuestion(next,pMode);
     if(S.role==='host') listenHostPhase();
   }
 }
